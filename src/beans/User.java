@@ -1,11 +1,12 @@
 package beans;
 
-public class User {
+public abstract class User {
 
 	private int id;
 	private String username;
 	private String name;
-	private String surname;
+	private String mailAddress;
+	private String password;
 
 	public int getId() {
 		return id;
@@ -31,12 +32,21 @@ public class User {
 		this.name = name;
 	}
 
-	public String getSurname() {
-		return surname;
+	public String getMailAddress() {
+		return mailAddress;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setMailAddress(String mailAddress) {
+		this.mailAddress = mailAddress;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 
 }
