@@ -6,9 +6,9 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
+<link rel="stylesheet" type="text/css" media="all"	href="../css/mystyle.css">
 </head>
 <body>
-
 	<div>
 		<c:choose>
 			<c:when test="${user == null}">
@@ -20,5 +20,6 @@
 		</c:choose>
 	</div>
 	<h1 align="center">Illegal Junkyard Crowdsourcing</h1>
+	
 </body>
 </html>

@@ -1,4 +1,4 @@
-package servlet;
+package controllers;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet("/NewCampaign")
-public class NewCampaign extends HttpServlet {
+@WebServlet("/InfoCampaign")
+public class InfoCampaign extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	
@@ -28,4 +28,3 @@ public class NewCampaign extends HttpServlet {
 	}
 
 }
-

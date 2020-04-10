@@ -1,4 +1,4 @@
-package servlet;
+package controllers;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet("/Logout")
+@WebServlet({"/Logout", "/LogOut"})
 public class Logout extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +24,7 @@ public class Logout extends HttpServlet {
 		if (session != null) {
 			session.invalidate();
 		}
-		String path = getServletContext().getContextPath() + "/HomePage.html";
+		String path = getServletContext().getContextPath() + "/Home";
 		response.sendRedirect(path);
 	}
 
