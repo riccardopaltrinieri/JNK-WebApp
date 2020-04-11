@@ -1,9 +1,26 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="ISO-8859-1">
-<title>HomePage</title>
+  <meta charset="ISO-8859-1">
+  <link href="css/mystyle.css" rel="stylesheet">
+  <title>JuNKyard Crowdsourcing: HomePage</title>
 </head>
 <body>
-	<h1 align="center">Illegal Junkyard Crowdsourcing</h1>
+	<div class="topnav">
+		<a th:href="@{/Home}" class="active">Home</a>
+		<a href="">Download</a>
+		<a href="">Docs</a>
+		<a href="">Ecosystem</a>
+		<a href="">FAQ</a>
+	 	<span th:switch="${session.user}" class="nav-right">
+			<a th:case="null" th:href="@{/LogIn}"> Log In</a>
+			<a th:case="*" th:href="@{/LogOut}">Log Out </a>
+		</span>
+		<span class="nav-right"><a th:href="@{/SignIn}" class="nav-right">Sign In</a></span>
+	</div>
+	<div>
+		<img src="/images/nome+logo.jpg" alt="Nome+Logo">
+ 		<h1 align="center">Illegal <b>J</b>u<b>NK</b>yard Crowdsourcing</h1>
+	</div>
 </body>
 </html>

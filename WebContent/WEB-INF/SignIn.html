@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+  <meta charset="ISO-8859-1">
+  <title>Jnk: Sign In</title>
+  <link href="css/mystyle.css" rel="stylesheet">
 </head>
 <body>
-
+	<div class="topnav">
+		<a th:href="@{/Home}" class="active">Home</a>
+		<a href="">Download</a>
+		<a href="">Docs</a>
+		<a href="">Ecosystem</a>
+		<a href="">FAQ</a>
+	 	<span th:switch="${session.user}" class="nav-right">
+			<a th:case="null" th:href="@{/LogIn}"> Log In</a>
+			<a th:case="*" th:href="@{/LogOut}">Log Out </a>
+		</span>
+		<span class="nav-right"><a th:href="@{/SignIn}" class="nav-right">Sign In</a></span>
+	</div>
 	<h1>Sign in to start helping the environment</h1>
 	
 	<form action="SignIn" method ="POST">

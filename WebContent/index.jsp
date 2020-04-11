@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Junkyard Crowdsourcing: HomePage</title>
 <link rel="stylesheet" type="text/css" media="all"	href="../css/mystyle.css">
 </head>
 <body>
