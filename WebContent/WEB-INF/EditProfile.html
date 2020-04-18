@@ -3,7 +3,7 @@
 <head>
   <meta charset="ISO-8859-1">
   <link href="css/mystyle.css" rel="stylesheet">
-  <title>JNK: SignIn</title>
+  <title>JNK: Account</title>
 </head>
 <body>
 	<div class="topnav">
@@ -19,23 +19,6 @@
 	<div>
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" alt="Nome+Logo"/>
 	</div>
-	<h1>Sign in to start helping the environment</h1>
-	
-	<form action="SignIn" method ="POST">
-	
-	E-mail address: <input type= "text" name="mailAddress"> <br>
-	Complete Name:  <input type= "text" name="name"> <br>
-	Username: <input type="text" name="username"> <br>
-	Password: <input type = "password" name="pwd"  ><br>
-	<fieldset>
-	<legend>Role</legend>
-		<select name="role" >
-			<option value="worker" selected="selected">Worker </option>
-			<option value="manager"> Manager </option>
-		</select>
-	</fieldset>
-	<input type="submit" value="SignIn">
-	</form>
-
+	<h1>Account Settings</h1>
 </body>
 </html>

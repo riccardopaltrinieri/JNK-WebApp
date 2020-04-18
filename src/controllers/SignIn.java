@@ -2,7 +2,6 @@ package controllers;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,12 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.User;
-import beans.Worker;
-import beans.Manager;
+import dao.UserDAO;
 
 /**
  * Servlet implementation class SignIn
@@ -41,20 +40,23 @@ public class SignIn extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String path = "/WEB-INF/SignIn.html";
-		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-		dispatcher.forward(request, response);
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		templateEngine.process(path, ctx, response.getWriter());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		User user;
+		UserDAO usr = new UserDAO();
+
+		String username = request.getParameter("username");
+		String name = request.getParameter("name");
+		String mailAddress = request.getParameter("mailAddress");
+		String password = request.getParameter("password");
+		String role = request.getParameter("role");
 		
-		if(request.getParameter("role").equals("worker")) user = new Worker();
-		else user = new Manager();
-		user.setName(request.getParameter("name"));
-		user.setMailAddress(request.getParameter("mailAddress"));
-		user.setUsername(request.getParameter("username"));
-		user.setPassword(request.getParameter("password"));
+
+		User user = usr.createNewUser(0, username, name, mailAddress, password, role);
 		
 
 		String path = getServletContext().getContextPath() + "/Home";

@@ -1,7 +1,7 @@
 package controllers;
 
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import beans.Worker;
+import beans.User;
 import dao.UserDAO;
 
 /**
@@ -39,29 +40,30 @@ public class Login extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String path = "/WEB-INF/LogIn.html";
-		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-		dispatcher.forward(request, response);
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		templateEngine.process(path, ctx, response.getWriter());
 	}
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		Worker user = new Worker();
 		UserDAO usr = new UserDAO();
 		
 		String usrn = request.getParameter("username");
 		String pwd = request.getParameter("password");
 		
-		if (usr.checkCredentials(usrn, pwd)) {
+		User user = usr.checkCredentials(usrn, pwd);
+		
+		if (user != null) {
 			String path = getServletContext().getContextPath() + "/Home";
-			request.getSession().setAttribute("valid", true);
+			request.getSession().setAttribute("notvalid", false);
 			request.getSession().setAttribute("user",user);
 			response.sendRedirect(path);
 		}
 		else {
-			String path = getServletContext().getContextPath() + "/LogIn";
-			request.getSession().setAttribute("valid", false);
-			response.sendRedirect(path);
+			request.getSession().setAttribute("notvalid", true);
+			doGet(request,response);
 		}
 	}
 

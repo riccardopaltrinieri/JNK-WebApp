@@ -1,38 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Jnk: Log in</title>
+  <meta charset="ISO-8859-1">
   <link href="css/mystyle.css" rel="stylesheet">
+  <title>JNK: Login</title>
 </head>
 <body>
-
 	<div class="topnav">
 		<a th:href="@{/Home}" class="active">Home</a>
-		<a href="">Download</a>
-		<a href="">Docs</a>
-		<a href="">Ecosystem</a>
-		<a href="">FAQ</a>
 	 	<span th:switch="${session.user}" class="nav-right">
 			<a th:case="null" th:href="@{/LogIn}"> Log In</a>
-			<a th:case="*" th:href="@{/LogOut}">Log Out </a>
+			<span th:case="*">
+				<a th:href="@{/EditProfile}" class="nav-right">Account</a>
+				<a th:href="@{/LogOut}">Log Out </a>
+			</span>
 		</span>
-		<span class="nav-right"><a th:href="@{/SignIn}" class="nav-right">Sign In</a></span>
 	</div>
+	<div>
+		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" alt="Nome+Logo"/>
+	</div>
+	
 	<h1>Please Log in to start working on this project</h1>
 	<form action="Login" method ="POST">
 	
-	<div th:if="${session.valid}" class="not-valid">
-		<p> "Username not valid" </p>
+	<div th:if="${session.notvalid == true}" class="not-valid">
+		<p> "Username or password incorrect" </p>
 	</div>
 	username: <input type="text" name="username"> <br>
 	password: <input type = "password" name="pwd"  ><br>
 	<input type="submit" value="Login">
 	</form>
 	
-	<p> You want to <a href= "/tiw_project/SignIn">Sign In</a> instead?</p>
+	<p> You want to <a th:href="@{/SignIn}">Sign In</a> instead?</p>
 
 </body>
 </html>

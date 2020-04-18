@@ -3,21 +3,19 @@
 <head>
   <meta charset="ISO-8859-1">
   <link href="css/mystyle.css" rel="stylesheet">
-  <title>JNK HomePage</title>
+  <title>JNK: Stats</title>
 </head>
 <body>
 	<div class="topnav">
 		<a th:href="@{/Home}" class="active">Home</a>
+		<span class="nav-right"><a th:href="@{/SignIn}" class="nav-right">Account</a></span>
 	 	<span th:switch="${session.user}" class="nav-right">
 			<a th:case="null" th:href="@{/LogIn}"> Log In</a>
-			<span th:case="*">
-				<a th:href="@{/EditProfile}" class="nav-right">Account</a>
-				<a th:href="@{/LogOut}">Log Out </a>
-			</span>
+			<a th:case="*" th:href="@{/LogOut}">Log Out </a>
 		</span>
 	</div>
 	<div>
-		<img src="images/logo-removebg.png" th:src="@{/images/logo-removebg.png}" alt="Nome+Logo"/>
+		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" alt="Nome+Logo"/>
  		<h1 align="center">Illegal <b>J</b>u<b>NK</b>yard Crowdsourcing</h1>
 	</div>
 </body>
