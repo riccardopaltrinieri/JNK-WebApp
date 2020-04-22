@@ -9,8 +9,8 @@ public class Worker extends User{
 	private int profilePic;
 	
 	
-	public Worker(int id, String username) {
-		super(id, username);
+	public Worker(String username) {
+		super(username);
 	}
 
 	public Level getLvlXP() {

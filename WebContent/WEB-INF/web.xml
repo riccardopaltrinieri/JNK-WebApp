@@ -4,6 +4,22 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 version="3.1">
 
+ <context-param>
+  <param-name>dbUrl</param-name>
+  <param-value>jdbc:mysql://localhost:3306/jnk</param-value>
+ </context-param>
+ <context-param>
+  <param-name>dbUser</param-name>
+  <param-value>root</param-value>
+ </context-param>
+ <context-param>
+  <param-name>dbPassword</param-name>
+  <param-value>P5CRuFmrwR</param-value>
+ </context-param>
+ <context-param>
+  <param-name>dbDriver</param-name>
+  <param-value>com.mysql.cj.jdbc.Driver</param-value>
+ </context-param>
  <welcome-file-list>
  <welcome-file>index.html</welcome-file>
 </welcome-file-list>

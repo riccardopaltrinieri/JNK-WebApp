@@ -23,10 +23,14 @@
 	
 	<form action="SignIn" method ="POST">
 	
-	E-mail address: <input type= "text" name="mailAddress"> <br>
-	Complete Name:  <input type= "text" name="name"> <br>
-	Username: <input type="text" name="username"> <br>
-	Password: <input type = "password" name="pwd"  ><br>
+	<div th:if="${session.notvalid == true}" class="not-valid">
+		<p> "Username or mail address already used" </p>
+	</div>
+	
+	E-mail address: <input type= "text" name="mailAddress" required> <br>
+	Complete Name:  <input type= "text" name="name" required> <br>
+	Username: <input type="text" name="username" required> <br>
+	Password: <input type = "password" name="pwd" required><br>
 	<fieldset>
 	<legend>Role</legend>
 		<select name="role" >

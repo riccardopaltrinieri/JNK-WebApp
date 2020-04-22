@@ -1,9 +1,13 @@
 package controllers;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,13 +28,28 @@ import dao.UserDAO;
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
+	private Connection connection = null;
     
 	@Override
 	public void init() throws ServletException {
 		
-		ServletContext servletContext = getServletContext();
+		ServletContext context = getServletContext();
+
+		//MySQL database connection initialization
+		try {
+			String url = "jdbc:mysql://localhost:3306/jnk";
+			String user = "root";
+			String password = "P5CRuFmrwR";
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection  = DriverManager.getConnection(url, user, password);
+			System.out.println("Connected to database");
+		} catch (ClassNotFoundException e ) {
+			throw new UnavailableException("Can't load db Driver " + context.getInitParameter("dbDriver"));
+		} catch (SQLException e ) {
+			throw new UnavailableException("Couldn't connect");
+		}
 		
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
+		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
@@ -48,7 +67,7 @@ public class Login extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		UserDAO usr = new UserDAO();
+		UserDAO usr = new UserDAO(connection);
 		
 		String usrn = request.getParameter("username");
 		String pwd = request.getParameter("password");
@@ -67,4 +86,12 @@ public class Login extends HttpServlet {
 		}
 	}
 
+	public void destroy() {
+		try {
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (SQLException sqle) {
+		}
+	}
 }
