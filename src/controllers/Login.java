@@ -37,18 +37,19 @@ public class Login extends HttpServlet {
 
 		//MySQL database connection initialization
 		try {
-			String url = "jdbc:mysql://localhost:3306/jnk";
-			String user = "root";
-			String password = "P5CRuFmrwR";
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			String driver = context.getInitParameter("dbDriver");
+			String url = context.getInitParameter("dbUrl");
+			String user = context.getInitParameter("dbUser");
+			String password = context.getInitParameter("dbPassword");
+			Class.forName(driver);
 			connection  = DriverManager.getConnection(url, user, password);
-			System.out.println("Connected to database");
 		} catch (ClassNotFoundException e ) {
 			throw new UnavailableException("Can't load db Driver " + context.getInitParameter("dbDriver"));
 		} catch (SQLException e ) {
 			throw new UnavailableException("Couldn't connect");
 		}
 		
+		//Thymeleaf code initialization
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
 		this.templateEngine = new TemplateEngine();
@@ -72,18 +73,24 @@ public class Login extends HttpServlet {
 		String usrn = request.getParameter("username");
 		String pwd = request.getParameter("password");
 		
-		User user = usr.checkCredentials(usrn, pwd);
-		
-		if (user != null) {
-			String path = getServletContext().getContextPath() + "/Home";
-			request.getSession().setAttribute("notvalid", false);
-			request.getSession().setAttribute("user",user);
-			response.sendRedirect(path);
-		}
-		else {
+		User user;
+		try {
+			user = usr.checkCredentials(usrn, pwd);
+			if (user != null) {
+				String path = getServletContext().getContextPath() + "/Home";
+				request.getSession().setAttribute("notvalid", false);
+				request.getSession().setAttribute("user",user);
+				response.sendRedirect(path);
+			} else {
+				request.getSession().setAttribute("notvalid", true);
+				doGet(request,response);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 			request.getSession().setAttribute("notvalid", true);
 			doGet(request,response);
 		}
+		
 	}
 
 	public void destroy() {

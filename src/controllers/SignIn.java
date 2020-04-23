@@ -42,7 +42,6 @@ public class SignIn extends HttpServlet {
 			String password = context.getInitParameter("dbPassword");
 			Class.forName(driver);
 			connection = DriverManager.getConnection(url, user, password);
-			System.out.println("Connected to database");
 		} catch (ClassNotFoundException e ) {
 			throw new UnavailableException("Can't load db Driver");
 		} catch (SQLException e ) {
@@ -74,7 +73,6 @@ public class SignIn extends HttpServlet {
 		String password = request.getParameter("pwd");
 		String role = request.getParameter("role");
 		
-		System.out.println("pw:" + password);
 		try {
 			User user = usr.createNewUser(username, name, mailAddress, password, role);
 

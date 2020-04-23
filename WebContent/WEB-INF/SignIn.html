@@ -6,6 +6,7 @@
   <title>JNK: SignIn</title>
 </head>
 <body>
+
 	<div class="topnav">
 		<a th:href="@{/Home}" class="active">Home</a>
 	 	<span th:switch="${session.user}" class="nav-right">
@@ -27,7 +28,7 @@
 		<p> "Username or mail address already used" </p>
 	</div>
 	
-	E-mail address: <input type= "text" name="mailAddress" required> <br>
+	E-mail address: <input type="email" name="mailAddress" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required> <br>
 	Complete Name:  <input type= "text" name="name" required> <br>
 	Username: <input type="text" name="username" required> <br>
 	Password: <input type = "password" name="pwd" required><br>

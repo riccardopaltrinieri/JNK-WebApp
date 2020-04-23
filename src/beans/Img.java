@@ -1,10 +1,11 @@
 package beans;
 
 import java.util.Date;
+import java.awt.image.BufferedImage;
 
 import enumerations.Level;
 
-public class Image {
+public class Img extends BufferedImage {
 
 	private double latitude;
 	private double longitude;
@@ -14,6 +15,9 @@ public class Image {
 	private Date date;
 	private Level resolution;
 	
+	public Img(int width, int height, int imageType) {
+		super(width, height, imageType);
+	}
 	
 	public double getLatitude() {
 		return latitude;
@@ -39,7 +43,8 @@ public class Image {
 	public void setRegion(String region) {
 		this.region = region;
 	}
-	public String getSource() {
+	public String getSrc() {
+		//getSource is a method from BufferedImage
 		return source;
 	}
 	public void setSource(String source) {
@@ -57,5 +62,4 @@ public class Image {
 	public void setResolution(Level resolution) {
 		this.resolution = resolution;
 	}
-	
 }

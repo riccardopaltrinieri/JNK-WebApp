@@ -19,6 +19,34 @@
 	<div>
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" alt="Nome+Logo"/>
 	</div>
+	<h3> Hi <b><span th:text="${session.user.username}">Riccardo</span></b>, Nice to see you again. <br>
+		You are a <span th:text="${session.user.role}">stupid</span>.</h3>
 	<h1>Account Settings</h1>
+	
+	<div>
+	<img th:if="${session.user.role=='worker'}" th:alt="profile+picture" 
+		src="images/default_propic.jpg" alt="default+picture">
+	Complete Name:  <span th:text="${session.worker.name}">default</span> <br>
+	E-mail address: <span th:text="${session.worker.mailAddress}">default</span> <br>
+	Username: <span th:text="${session.worker.username}">default</span> <br>
+	Password: <span th:text="${session.worker.password}">default</span> <br>
+	<span th:if="${session.user.role=='worker'}"> 
+		Level of Experience: <span th:text="${session.worker.password}">default</span> <br>
+	</span>
+	<br>
+	</div>
+	
+	<form action="EditProfile" method ="POST">
+	<br>
+	Insert here what you want to change: <br>
+	E-mail address: <input type="email" name="mailAddress" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" > <br>
+	Complete Name:  <input type= "text" name="name" > <br>
+	Username: <input type="text" name="username" > <br>
+	Password: <input type = "password" name="pwd" ><br>
+	<div th:if="${session.notvalid == true}" class="not-valid">
+		<p> <br> "Username or mail address already used" <br> </p></div>
+	<input type="submit" value="EditProfile">
+	</form>
+	
 </body>
 </html>

@@ -33,12 +33,23 @@ public class UserDAO {
 		}
 	}
 	
-	public User checkCredentials(String username, String pwd) {
+	public User checkCredentials(String username, String pwd) throws SQLException {
 		
-		//String query = "SELECT  id, role, username FROM user  WHERE username = ? AND password =?";
+		String query = "SELECT role FROM jnk_users WHERE username = ? AND password = ?";
 		
-		
-		if(username.equals("wronguser")) return null;
-		else return new User(username);
+		try (PreparedStatement pstatement = con.prepareStatement(query);) {
+			pstatement.setString(1, username);
+			pstatement.setString(2, pwd);
+			try (ResultSet result = pstatement.executeQuery();) {
+				if (!result.isBeforeFirst()) // no results, credential check failed
+					return null;
+				else {
+					result.next();
+					User user = new User(username);
+					user.setRole(result.getString("role"));
+					return user;
+				}
+			}
+		}
 	}
 }

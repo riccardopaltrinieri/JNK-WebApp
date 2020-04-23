@@ -32,8 +32,13 @@ img {
   color: black;
 }
 
-
 .topnav a.active {
   background-color: #d0bf4e;
   color: white;
+}
+
+.not-valid {
+  background-color: rgba(198,0,0,0.4);
+  border: 3px solid #C60000;;
+  color: black;
 }
