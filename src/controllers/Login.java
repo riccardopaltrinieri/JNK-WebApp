@@ -43,6 +43,7 @@ public class Login extends HttpServlet {
 			String password = context.getInitParameter("dbPassword");
 			Class.forName(driver);
 			connection  = DriverManager.getConnection(url, user, password);
+			System.out.println("Connected to database");
 		} catch (ClassNotFoundException e ) {
 			throw new UnavailableException("Can't load db Driver " + context.getInitParameter("dbDriver"));
 		} catch (SQLException e ) {
@@ -76,6 +77,7 @@ public class Login extends HttpServlet {
 		User user;
 		try {
 			user = usr.checkCredentials(usrn, pwd);
+			System.out.println("query successfully executed");
 			if (user != null) {
 				String path = getServletContext().getContextPath() + "/Home";
 				request.getSession().setAttribute("notvalid", false);

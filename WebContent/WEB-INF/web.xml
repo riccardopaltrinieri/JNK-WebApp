@@ -20,6 +20,18 @@ version="3.1">
   <param-name>dbDriver</param-name>
   <param-value>com.mysql.cj.jdbc.Driver</param-value>
  </context-param>
+
+ <filter> 
+      <filter-name>LogChecker</filter-name>
+      <filter-class>filters.UserChecker</filter-class> 
+ </filter> 
+ <filter-mapping> 
+    <filter-name>LogChecker</filter-name> 
+    <url-pattern>/Home</url-pattern> 
+    <url-pattern>/EditProfile</url-pattern> 
+    <url-pattern>/Logout</url-pattern> 
+ </filter-mapping> 
+
  <welcome-file-list>
  <welcome-file>index.html</welcome-file>
 </welcome-file-list>

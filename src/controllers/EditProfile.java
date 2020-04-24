@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -20,9 +19,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.User;
-import beans.Worker;
 import dao.UserDAO;
-import dao.WorkerDAO;
 
 /**
  * Servlet implementation class EditProfile
@@ -47,6 +44,7 @@ public class EditProfile extends HttpServlet {
 			String password = context.getInitParameter("dbPassword");
 			Class.forName(driver);
 			connection = DriverManager.getConnection(url, user, password);
+			System.out.println("Connected to database");
 		} catch (ClassNotFoundException e ) {
 			throw new UnavailableException("Can't load db Driver");
 		} catch (SQLException e ) {
@@ -62,15 +60,6 @@ public class EditProfile extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		WorkerDAO wrk = new WorkerDAO(connection);
-		User user = (User) request.getSession().getAttribute("user");
-		try {
-			Worker worker = wrk.getCredentials(user.getUsername());
-			request.getSession().setAttribute("worker",worker);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		
 		String path = "/WEB-INF/EditProfile.html";
 		ServletContext servletContext = getServletContext();
@@ -81,9 +70,9 @@ public class EditProfile extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		WorkerDAO wrk = new WorkerDAO(connection);
-		Worker worker = (Worker) request.getSession().getAttribute("worker");
+		UserDAO usr = new UserDAO(connection);
 		User user = (User) request.getSession().getAttribute("user");
+		System.out.println("query successfully executed");
 
 		String username = request.getParameter("username");
 		String name = request.getParameter("name");
@@ -91,17 +80,17 @@ public class EditProfile extends HttpServlet {
 		String password = request.getParameter("pwd");
 		
 		try {
-			if(username.isEmpty()) username = worker.getUsername();
-			if(name.isEmpty()) username = worker.getName();
-			if(mailAddress.isEmpty()) username = worker.getMailAddress();
-			if(password.isEmpty()) username = worker.getPassword();
+			if(username.isEmpty()) username = user.getUsername();
+			if(name.isEmpty()) name = user.getName();
+			if(mailAddress.isEmpty()) mailAddress = user.getMailAddress();
+			if(password.isEmpty()) password = user.getPassword();
 			
-			wrk.editUser(user.getUsername(), username, name, mailAddress, password);
-			user.setUsername(username);
+			user = usr.editUser(user.getUsername(), username, name, mailAddress, password, user.getRole());
+			System.out.println("query successfully executed");
+			request.getSession().setAttribute("user",user);
 			
 		} catch (SQLException e) {
 			System.out.println(e);
-			request.getSession().setAttribute("notvalid", true);
 		}
 		
 		doGet(request,response);
