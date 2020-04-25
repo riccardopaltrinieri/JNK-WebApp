@@ -80,6 +80,7 @@ public class SignIn extends HttpServlet {
 
 			String path = getServletContext().getContextPath() + "/Home";
 			request.getSession().setAttribute("user",user);
+			request.getSession().setAttribute("notvalid", false);
 			response.sendRedirect(path);
 			
 		} catch (SQLException e) {

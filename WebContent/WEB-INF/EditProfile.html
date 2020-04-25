@@ -24,8 +24,8 @@
 	<h1>Account Settings</h1>
 	
 	<div>
-	<img th:if="${session.user.role=='worker'}" th:alt="profile+picture" 
-		src="images/default_propic.jpg" alt="default+picture">
+	<img th:if="${session.user.role=='worker'}" th:alt="profile+picture"
+		th:src="${avatar}" alt="default+picture">
 	Complete Name:  <span th:text="${session.user.name}">default</span> <br>
 	E-mail address: <span th:text="${session.user.mailAddress}">default</span> <br>
 	Username: <span th:text="${session.user.username}">default</span> <br>
@@ -36,9 +36,12 @@
 	<br>
 	</div>
 	
-	<form action="EditProfile" method ="POST">
+	<form action="EditProfile" method ="POST" enctype="multipart/form-data">
 	<br>
 	Insert here what you want to change: <br>
+	<span th:if="${session.user.role=='worker'}">
+		Profile Picture:(only jpg) 	<input type="file" id="avatar" name="avatar" accept="image/jpeg"> <br>
+	</span>
 	Complete Name:  <input type= "text" name="name" > <br>
 	E-mail address: <input type="email" name="mailAddress" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" > <br>
 	Username: <input type="text" name="username" > <br>

@@ -1,24 +1,24 @@
 package beans;
 
 import java.util.Date;
-import java.awt.image.BufferedImage;
 
 import enumerations.Level;
 
-public class Img extends BufferedImage {
+public class Img {
 
 	private double latitude;
 	private double longitude;
+	private String path;
 	private String city;
 	private String region;
 	private String source;
 	private Date date;
 	private Level resolution;
 	
-	public Img(int width, int height, int imageType) {
-		super(width, height, imageType);
+	public Img(String path) {
+		this.path = path;
 	}
-	
+
 	public double getLatitude() {
 		return latitude;
 	}
@@ -43,8 +43,7 @@ public class Img extends BufferedImage {
 	public void setRegion(String region) {
 		this.region = region;
 	}
-	public String getSrc() {
-		//getSource is a method from BufferedImage
+	public String getSource() {
 		return source;
 	}
 	public void setSource(String source) {
@@ -61,5 +60,11 @@ public class Img extends BufferedImage {
 	}
 	public void setResolution(Level resolution) {
 		this.resolution = resolution;
+	}
+	public String getPath() {
+		return path;
+	}
+	public void setPath(String path) {
+		this.path = path;
 	}
 }

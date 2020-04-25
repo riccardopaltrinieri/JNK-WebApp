@@ -20,6 +20,7 @@ public class User {
 		this.mailAddress = mailAddress;
 		this.password = password;
 		this.LvlExp = Level.Low;
+		this.profilePic = new Img("Default");
 	}
 	
 

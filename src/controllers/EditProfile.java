@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,10 +9,12 @@ import java.sql.SQLException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -25,10 +28,11 @@ import dao.UserDAO;
  * Servlet implementation class EditProfile
  */
 @WebServlet("/EditProfile")
+@MultipartConfig
 public class EditProfile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
-
+	private String location = "";
     private Connection connection = null;
     
 	@Override
@@ -61,12 +65,16 @@ public class EditProfile extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		User user = (User) request.getSession().getAttribute("user");
+		//if(user.getProfilePic().getPath().equals("default")
+			File file = new File("C:\\Users\\ricky\\Documents\\GitHub\\tiwproject2020\\WebContent\\images\\profilePictures\\" + user.getUsername() + ".jpg");
+		request.setAttribute("avatar", file.toString() );
+		
 		String path = "/WEB-INF/EditProfile.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		templateEngine.process(path, ctx, response.getWriter());
 	}
-
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -78,6 +86,7 @@ public class EditProfile extends HttpServlet {
 		String name = request.getParameter("name");
 		String mailAddress = request.getParameter("mailAddress");
 		String password = request.getParameter("pwd");
+		Part image = request.getPart("avatar");
 		
 		try {
 			if(username.isEmpty()) username = user.getUsername();
@@ -86,6 +95,9 @@ public class EditProfile extends HttpServlet {
 			if(password.isEmpty()) password = user.getPassword();
 			
 			user = usr.editUser(user.getUsername(), username, name, mailAddress, password, user.getRole());
+			
+			if(image != null) usr.setImage(user, image);
+			
 			System.out.println("query successfully executed");
 			request.getSession().setAttribute("user",user);
 			
