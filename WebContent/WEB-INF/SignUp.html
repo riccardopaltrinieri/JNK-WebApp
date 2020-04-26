@@ -3,7 +3,7 @@
 <head>
   <meta charset="ISO-8859-1">
   <link href="css/mystyle.css" rel="stylesheet">
-  <title>JNK: SignIn</title>
+  <title>JNK: SignUp</title>
 </head>
 <body>
 
@@ -20,9 +20,9 @@
 	<div>
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" alt="Nome+Logo"/>
 	</div>
-	<h1>Sign in to start helping the environment</h1>
+	<h1>Sign Up to start helping the environment</h1>
 	
-	<form action="SignIn" method ="POST">
+	<form action="SignUp" method ="POST">
 	
 	<div th:if="${session.notvalid == true}" class="not-valid">
 		<p> "Username or mail address already used" </p>
@@ -39,7 +39,7 @@
 			<option value="manager"> Manager </option>
 		</select>
 	</fieldset>
-	<input type="submit" value="SignIn">
+	<input type="submit" value="SignUp">
 	</form>
 
 </body>

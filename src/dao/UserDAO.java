@@ -5,12 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.servlet.http.Part;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.sql.*;
 
 
@@ -23,7 +17,9 @@ public class UserDAO {
 	
 	public User createNewUser(String username, String name, String mailAddress, String password, String role) throws SQLException {
 
+		ImageDAO img = new ImageDAO();
 		String query = "INSERT INTO jnk.jnk_users (username, mail_address, name, password, role) VALUES (?, ?, ?, ?, ?);";
+		
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 
 			pstatement.setString(1, username);
@@ -34,7 +30,7 @@ public class UserDAO {
 			pstatement.executeUpdate();
 			
 			User user = new User(username, role, name, mailAddress, password);
-			setImage(user, null);
+			img.setUserImage(user, null);
 			return user;
 		}
 	}
@@ -80,26 +76,4 @@ public class UserDAO {
 		}
 	}
 
-	public void setImage(User user, Part image) {
-
-		File file = new File("C:\\Users\\ricky\\Documents\\GitHub\\tiwproject2020\\WebContent\\images\\profilePictures\\" + user.getUsername() + ".jpg");
-		if(file.exists()) file.delete();
-		
-		if(image != null) {
-			try (InputStream input = image.getInputStream()) {
-			    Files.copy(input, file.toPath());
-			    
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				File defaultAvatar = new File("C:\\Users\\ricky\\Documents\\GitHub\\tiwproject2020\\WebContent\\images\\profilePictures\\Default.jpg");
-			    Files.copy(defaultAvatar.toPath(), file.toPath());
-			    
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 }

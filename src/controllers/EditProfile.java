@@ -1,6 +1,5 @@
 package controllers;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,6 +21,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.User;
+import dao.ImageDAO;
 import dao.UserDAO;
 
 /**
@@ -32,7 +32,6 @@ import dao.UserDAO;
 public class EditProfile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
-	private String location = "";
     private Connection connection = null;
     
 	@Override
@@ -66,9 +65,9 @@ public class EditProfile extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		User user = (User) request.getSession().getAttribute("user");
-		//if(user.getProfilePic().getPath().equals("default")
-			File file = new File("C:\\Users\\ricky\\Documents\\GitHub\\tiwproject2020\\WebContent\\images\\profilePictures\\" + user.getUsername() + ".jpg");
-		request.setAttribute("avatar", file.toString() );
+		ImageDAO img = new ImageDAO();
+		
+		request.setAttribute("avatar", img.getUserImage(user));
 		
 		String path = "/WEB-INF/EditProfile.html";
 		ServletContext servletContext = getServletContext();
@@ -79,6 +78,7 @@ public class EditProfile extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		UserDAO usr = new UserDAO(connection);
+		ImageDAO img = new ImageDAO();
 		User user = (User) request.getSession().getAttribute("user");
 		System.out.println("query successfully executed");
 
@@ -96,7 +96,7 @@ public class EditProfile extends HttpServlet {
 			
 			user = usr.editUser(user.getUsername(), username, name, mailAddress, password, user.getRole());
 			
-			if(image != null) usr.setImage(user, image);
+			if(image != null) img.setUserImage(user, image);
 			
 			System.out.println("query successfully executed");
 			request.getSession().setAttribute("user",user);
@@ -108,4 +108,12 @@ public class EditProfile extends HttpServlet {
 		doGet(request,response);
 	}
 
+	public void destroy() {
+		try {
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (SQLException sqle) {
+		}
+	}
 }

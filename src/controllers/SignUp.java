@@ -22,8 +22,8 @@ import dao.UserDAO;
 /**
  * Servlet implementation class SignIn
  */
-@WebServlet("/SignIn")
-public class SignIn extends HttpServlet {
+@WebServlet("/SignUp")
+public class SignUp extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;
        
@@ -58,7 +58,7 @@ public class SignIn extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/SignIn.html";
+		String path = "/WEB-INF/SignUp.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		templateEngine.process(path, ctx, response.getWriter());

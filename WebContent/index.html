@@ -20,5 +20,41 @@
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" alt="Nome+Logo"/>
  		<h1 align="center">Illegal <b>J</b>u<b>NK</b>yard Crowdsourcing</h1>
 	</div>
+	
+	<!-- **************************************** MANAGER VIEW ************************************************* -->
+	<div th:if="${session.user.role=='manager'}">
+	
+		<div id="CampaignView">
+			
+				<table border="1">
+					<thead>
+						<tr>
+							<th>Campaign Name</th>
+							<th>Campaign State</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="c : ${campaigns}">
+							<td>
+								<a href="ManagerCampaign.html" th:href="@{/InfoCampaign(campaign=${c.name})}" th:text="${c.name}"> default </a>
+							</td>
+							<td th:text="${c.state}">closed</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+		
+		<div id="CampaignForm">
+			<form action="CreateCampaign" method ="POST">
+				<div th:if="${notValid == 'true'}" class="not-valid">
+					<p> "This Campaign already exists, please use another name. " </p>
+				</div>
+				Name:  <input type= "text" name="name" required> <br>
+				Customer:  <input type= "text" name="customer" required> <br>
+				<input type="submit" value="CreateCampaign">
+			</form>
+		</div>
+	</div>
+	
 </body>
 </html>

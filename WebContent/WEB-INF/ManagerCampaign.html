@@ -16,7 +16,12 @@
 	</div>
 	<div>
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" alt="Nome+Logo"/>
- 		<h1 align="center">Illegal <b>J</b>u<b>NK</b>yard Crowdsourcing</h1>
+	</div>
+	
+	<div>
+		<h1> Campaign <span th:text="${campaign.name}"> Default </span>: </h1>
+		Customer: <span th:text="${campaign.customer}"> None</span> <br>
+		State: <span th:text="${campaign.State}"> None </span> <br>
 	</div>
 </body>
 </html>
