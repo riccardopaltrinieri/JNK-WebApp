@@ -15,13 +15,54 @@
 		</span>
 	</div>
 	<div>
-		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" alt="Nome+Logo"/>
+		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
 	</div>
 	
 	<div>
-		<h1> Campaign <span th:text="${campaign.name}"> Default </span>: </h1>
-		Customer: <span th:text="${campaign.customer}"> None</span> <br>
-		State: <span th:text="${campaign.State}"> None </span> <br>
+		<h1> Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
+		Customer: <span th:text="${session.campaign.customer}"> None</span> <br>
+		State: <span th:text="${#strings.toString(session.campaign.state)}"> None </span> 
+		<form action="UpdateCampaign" method="GET">
+			<input type="submit" 
+				th:if="${#strings.toString(session.campaign.state) == 'Created' and session.campaign.numImages >= 1}" 
+				th:name="action" th:value="Start">
+			<input type="submit" 
+				th:if="${#strings.toString(session.campaign.state) == 'Started'}" 
+				th:name="action" th:value="Close">
+		</form>
+		
+		<br> 
+		<div>
+			<span th:each="img : ${campaignImages}">
+				<a th:if="${#strings.toString(session.campaign.state) == 'Started'}" th:href="@{/InfoImage(image=${img.name})}" > <img th:src="${img.path}" th:class="cmp-img" alt="campaign+images"> </a>
+				<img th:unless="${#strings.toString(session.campaign.state) == 'Started'}" th:src="${img.path}" th:class="cmp-img" alt="campaign+images"> 
+			</span>
+			<span th:if="${#strings.toString(session.campaign.state) == 'Started'}">
+				<br>
+				Image:  <span th:text="${image.name}">default</span> <br>
+				Resolution(High, Medium, Low): <span th:text="${image.name}">default</span> <br>
+				Latitude: <span th:text="${image.latitude}">default</span> <br>
+				Longitude: <span th:text="${image.longitude}">default</span> <br>
+				City: <span th:text="${image.city}">default</span> <br>
+				Region: <span th:text="${image.region}">default</span> <br>
+				Source: <span th:text="${image.source}">default</span> <br>
+			</span>
+		</div>
+		
+		<div th:if="${#strings.toString(session.campaign.state) == 'Created'}" >
+			<h4>Add more images here: </h4>
+			<form action="AddImage" method="POST" enctype="multipart/form-data">
+				<input type="file" id="image" name="image" accept="image/jpeg" required> <br>
+				Resolution(High, Medium, Low): <input type="text" name="resolution"> <br>
+				Latitude: <input type="text" name="latitude"> <br>
+				Longitude: <input type="text" name="longitude"> <br>
+				City: <input type="text" name="city"> <br>
+				Region: <input type="text" name="region"> <br>
+				Source: <input type="text" name="source"> <br>
+				
+				<input type="submit" value="Add">
+			</form>
+		</div>
 	</div>
 </body>
 </html>

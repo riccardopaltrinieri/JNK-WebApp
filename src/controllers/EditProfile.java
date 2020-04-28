@@ -47,7 +47,6 @@ public class EditProfile extends HttpServlet {
 			String password = context.getInitParameter("dbPassword");
 			Class.forName(driver);
 			connection = DriverManager.getConnection(url, user, password);
-			System.out.println("Connected to database");
 		} catch (ClassNotFoundException e ) {
 			throw new UnavailableException("Can't load db Driver");
 		} catch (SQLException e ) {
@@ -80,7 +79,6 @@ public class EditProfile extends HttpServlet {
 		UserDAO usr = new UserDAO(connection);
 		ImageDAO img = new ImageDAO();
 		User user = (User) request.getSession().getAttribute("user");
-		System.out.println("query successfully executed");
 
 		String username = request.getParameter("username");
 		String name = request.getParameter("name");

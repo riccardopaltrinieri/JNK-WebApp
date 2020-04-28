@@ -10,7 +10,6 @@ public class User {
 	private String mailAddress;
 	private String password;
 	private Level LvlExp;
-	private Img profilePic;
 	
 	
 	public User(String username, String role, String name, String mailAddress, String password) {
@@ -20,7 +19,6 @@ public class User {
 		this.mailAddress = mailAddress;
 		this.password = password;
 		this.LvlExp = Level.Low;
-		this.profilePic = new Img("Default");
 	}
 	
 
@@ -47,12 +45,6 @@ public class User {
 	}
 	public void setLvlExp(String lvlExp) {
 		LvlExp = Level.valueOf(lvlExp);
-	}
-	public Img getProfilePic() {
-		return profilePic;
-	}
-	public void setProfilePic(String propic) {
-		//TODO
 	}
 	public String getUsername() {
 		return username;

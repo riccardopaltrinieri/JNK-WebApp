@@ -4,10 +4,11 @@ import java.util.Date;
 
 import enumerations.Level;
 
-public class Img {
+public class Image {
 
-	private double latitude;
-	private double longitude;
+	private int name;
+	private String latitude;
+	private String longitude;
 	private String path;
 	private String city;
 	private String region;
@@ -15,20 +16,21 @@ public class Img {
 	private Date date;
 	private Level resolution;
 	
-	public Img(String path) {
+	public Image(int num, String path) {
+		this.name = num;
 		this.path = path;
 	}
 
-	public double getLatitude() {
+	public String getLatitude() {
 		return latitude;
 	}
-	public void setLatitude(double latitude) {
+	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
-	public double getLongitude() {
+	public String getLongitude() {
 		return longitude;
 	}
-	public void setLongitude(double longitude) {
+	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
 	public String getCity() {
@@ -58,13 +60,19 @@ public class Img {
 	public Level getResolution() {
 		return resolution;
 	}
-	public void setResolution(Level resolution) {
-		this.resolution = resolution;
+	public void setResolution(String resolution) {
+		this.resolution = Level.valueOf(resolution);
 	}
 	public String getPath() {
 		return path;
 	}
 	public void setPath(String path) {
 		this.path = path;
+	}
+	public int getName() {
+		return name;
+	}
+	public void setName(int name) {
+		this.name = name;
 	}
 }

@@ -7,15 +7,16 @@ public class Campaign {
 	private String customer;
 	private String owner;
 	private State state;
+	private int numImages;
 	
-	
-	public Campaign(String name, String customer, String owner, State state) {
+	public Campaign(String name, String customer, String owner, State state, int numImages) {
 		this.name = name;
 		this.customer = customer;
 		this.owner = owner;
 		this.state = state;
+		this.setNumImages(numImages);
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -39,6 +40,12 @@ public class Campaign {
 	}
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+	public int getNumImages() {
+		return numImages;
+	}
+	public void setNumImages(int numImages) {
+		this.numImages = numImages;
 	}
 	
 }

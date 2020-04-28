@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -19,8 +20,11 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.Campaign;
+import beans.Image;
 import beans.User;
 import dao.CampaignDAO;
+import dao.ImageDAO;
+import enumerations.State;
 
 
 @WebServlet({"/InfoCampaign", "/CreateCampaign"})
@@ -43,7 +47,6 @@ public class InfoCampaign extends HttpServlet {
 			String password = context.getInitParameter("dbPassword");
 			Class.forName(driver);
 			connection = DriverManager.getConnection(url, user, password);
-			System.out.println("Connected to database");
 		} catch (ClassNotFoundException e ) {
 			throw new UnavailableException("Can't load db Driver");
 		} catch (SQLException e ) {
@@ -60,13 +63,34 @@ public class InfoCampaign extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String campaign = request.getParameter("campaign");
+		String campaignName = request.getParameter("campaign");
+		Image image = (Image) request.getAttribute("image");
 		CampaignDAO cmp = new CampaignDAO(connection);
-		try {
-			request.setAttribute("campaign", cmp.getCampaign(campaign));
-		} catch (SQLException e) {
-			e.printStackTrace();
+		ImageDAO img = new ImageDAO();
+		
+		if(campaignName != null) {
+			try {
+				request.getSession().setAttribute("campaign", cmp.getCampaign(campaignName));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} 
+		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
+		
+		//It shows the infos about the first image on default
+		if(campaign.getState() == State.Started) {
+			if(image == null && campaign.getNumImages() > 0) {
+				try {
+					image = img.getImageInfo(campaign, "1", connection);
+					request.setAttribute("image", image);
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
 		}
+		
+		List<Image> campaignImages = img.getCampaignImages(campaign);
+		request.setAttribute("campaignImages", campaignImages);
 		
 		String path = "/WEB-INF/ManagerCampaign.html";
 		ServletContext servletContext = getServletContext();
@@ -85,7 +109,7 @@ public class InfoCampaign extends HttpServlet {
 		
 		try {
 			Campaign campaign = cmp.createNewCampaign(user, name, customer);
-			request.setAttribute("campaign", campaign);
+			request.getSession().setAttribute("campaign", campaign);
 			String path = "/WEB-INF/ManagerCampaign.html";
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());

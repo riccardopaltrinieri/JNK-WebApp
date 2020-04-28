@@ -17,7 +17,7 @@
 		</span>
 	</div>
 	<div>
-		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" alt="Nome+Logo"/>
+		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
 	</div>
 	<h3> Hi <b><span th:text="${session.user.name}">Riccardo</span></b>, Nice to see you again. <br>
 		You are a <span th:text="${session.user.role}">stupid</span>.</h3>
@@ -25,7 +25,7 @@
 	
 	<div>
 	<img th:if="${session.user.role=='worker'}" th:alt="profile+picture"
-		th:src="${avatar}" alt="default+picture">
+		th:src="${avatar}" alt="default+picture" class="logo"> <br>
 	Complete Name:  <span th:text="${session.user.name}">default</span> <br>
 	E-mail address: <span th:text="${session.user.mailAddress}">default</span> <br>
 	Username: <span th:text="${session.user.username}">default</span> <br>
@@ -48,7 +48,7 @@
 	Password: <input type = "password" name="pwd" ><br>
 	<div th:if="${session.notvalid == true}" class="not-valid">
 		<p> <br> "Username or mail address already used" <br> </p></div>
-	<input type="submit" value="EditProfile">
+	<input type="submit" value="Edit">
 	</form>
 	
 </body>

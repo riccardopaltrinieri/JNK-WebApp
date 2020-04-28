@@ -14,21 +14,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import beans.User;
-import dao.UserDAO;
+import beans.Campaign;
+import beans.Image;
+import dao.ImageDAO;
 
 /**
- * Servlet implementation class LogIn
+ * Servlet implementation class InfoImage
  */
-@WebServlet({"/LogIn", "/Login"})
-public class Login extends HttpServlet {
+@WebServlet("/InfoImage")
+public class InfoImage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+    private Connection connection = null;
+    
 	private TemplateEngine templateEngine;
-	private Connection connection = null;
     
 	@Override
 	public void init() throws ServletException {
@@ -42,57 +43,43 @@ public class Login extends HttpServlet {
 			String user = context.getInitParameter("dbUser");
 			String password = context.getInitParameter("dbPassword");
 			Class.forName(driver);
-			connection  = DriverManager.getConnection(url, user, password);
+			connection = DriverManager.getConnection(url, user, password);
 		} catch (ClassNotFoundException e ) {
-			throw new UnavailableException("Can't load db Driver " + context.getInitParameter("dbDriver"));
+			throw new UnavailableException("Can't load db Driver");
 		} catch (SQLException e ) {
 			throw new UnavailableException("Couldn't connect");
 		}
 		
-		//Thymeleaf code initialization
+		
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
 	}
-
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/LogIn.html";
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		templateEngine.process(path, ctx, response.getWriter());
-	}
-
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+		String imageName = request.getParameter("image");
+		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
+		ImageDAO img = new ImageDAO();
 		
-		UserDAO usr = new UserDAO(connection);
-		
-		String usrn = request.getParameter("username");
-		String pwd = request.getParameter("password");
-		
-		User user;
+		Image image;
 		try {
-			user = usr.checkCredentials(usrn, pwd);
-			if (user != null) {
-				String path = getServletContext().getContextPath() + "/Home";
-				request.getSession().setAttribute("notvalid", false);
-				request.getSession().setAttribute("user",user);
-				response.sendRedirect(path);
-			} else {
-				request.getSession().setAttribute("notvalid", true);
-				doGet(request,response);
-			}
+			image = img.getImageInfo(campaign, imageName, connection);
+			request.setAttribute("image", image);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			request.getSession().setAttribute("notvalid", true);
-			doGet(request,response);
 		}
-		
+
+		String path = "/InfoCampaign";
+		request.getRequestDispatcher(path).forward(request, response);
 	}
 
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+		doGet(request,response);
+	}
+	
 	public void destroy() {
 		try {
 			if (connection != null) {
@@ -101,4 +88,5 @@ public class Login extends HttpServlet {
 		} catch (SQLException sqle) {
 		}
 	}
+
 }

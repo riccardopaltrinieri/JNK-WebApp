@@ -30,10 +30,14 @@ version="3.1">
     <url-pattern>/Home</url-pattern> 
     <url-pattern>/EditProfile</url-pattern> 
     <url-pattern>/Logout</url-pattern> 
+    <url-pattern>/InfoCampaign</url-pattern> 
+    <url-pattern>/CreateCampaign</url-pattern> 
+    <url-pattern>/ManagerEditCampaign</url-pattern> 
+    <url-pattern>/AddImage</url-pattern> 
  </filter-mapping> 
 
  <welcome-file-list>
- <welcome-file>index.html</welcome-file>
+ <welcome-file>Home.html</welcome-file>
 </welcome-file-list>
 
 </web-app>

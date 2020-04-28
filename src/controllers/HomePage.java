@@ -45,7 +45,6 @@ public class HomePage extends HttpServlet {
 			String password = context.getInitParameter("dbPassword");
 			Class.forName(driver);
 			connection = DriverManager.getConnection(url, user, password);
-			System.out.println("Connected to database");
 		} catch (ClassNotFoundException e ) {
 			throw new UnavailableException("Can't load db Driver");
 		} catch (SQLException e ) {
@@ -66,11 +65,20 @@ public class HomePage extends HttpServlet {
 		CampaignDAO cmp = new CampaignDAO(connection);
 		List<Campaign> campaigns;
 		
-		try {
-			campaigns = cmp.getManagerCampaigns(user);
-			request.setAttribute("campaigns", campaigns);
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if(user.getRole().equals("manager")) {
+			try {
+				campaigns = cmp.getManagerCampaigns(user);
+				request.setAttribute("campaigns", campaigns);
+			} catch (SQLException e) {
+				System.out.println(e);
+			}
+		} else {
+			try {
+				campaigns = cmp.getUserCampaigns(user);
+				request.setAttribute("campaigns", campaigns);
+			} catch (SQLException e) {
+				System.out.println(e);
+			}
 		}
 		
 		String path = "/index.html";
