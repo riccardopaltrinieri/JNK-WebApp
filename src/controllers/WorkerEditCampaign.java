@@ -8,22 +8,21 @@ import java.sql.SQLException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-
+import beans.Annotation;
 import beans.Campaign;
 import beans.Image;
-import dao.CampaignDAO;
-import dao.ImageDAO;
+import beans.User;
+import dao.AnnotationDAO;
 
-
-@WebServlet({"/AddImage", "/UpdateCampaign" })
-@MultipartConfig
-public class ManagerEditCampaign extends HttpServlet {
+/**
+ * Servlet implementation class UserEditCampaign
+ */
+@WebServlet("/AddAnnotation")
+public class WorkerEditCampaign extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;
     
@@ -49,46 +48,29 @@ public class ManagerEditCampaign extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String action = (String) request.getParameter("action");
-		CampaignDAO cmp = new CampaignDAO(connection);
-		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
-		
-		if(action != null) {
-			try {
-				campaign = cmp.updateCampaign(campaign, action);
-				request.getSession().setAttribute("campaign", campaign);
-				} catch (SQLException e) {
-				System.out.println(e);
-			}
-		} 
-		String path = "/ManageCampaign";
+		String path = "/WorkerCampaign";
 		response.sendRedirect(request.getContextPath() + path);
 	}
 
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		CampaignDAO cmp = new CampaignDAO(connection);
-		ImageDAO img = new ImageDAO();
+		
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
-		Image newImage = new Image(0, "");
+		User user = (User) request.getSession().getAttribute("user");
+		AnnotationDAO ant = new AnnotationDAO(connection);
+		Annotation annotation = new Annotation();
 		
-		newImage.setLatitude(request.getParameter("latitude"));
-		newImage.setLongitude(request.getParameter("longitude"));
-		newImage.setResolution(request.getParameter("resolution"));
-		newImage.setRegion(request.getParameter("region"));
-		newImage.setSource(request.getParameter("source"));
-		newImage.setCity(request.getParameter("city"));
 		
-		Part image = request.getPart("image");
-		if(image != null ) {
-			img.addCampaignImage(campaign, image);
-			try {
-				cmp.newImage(campaign, newImage);
-			} catch (SQLException e) {
-				System.out.println(e);
-			}
+		int imageName = Integer.parseInt(request.getParameter("image"));
+		annotation.setValidity(request.getParameter("validity"));
+		annotation.setNotes(request.getParameter("notes"));
+		annotation.setTrust(user.getLvlExp());
+		
+		try {
+			ant.addAnnotation(annotation, user, campaign, imageName);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		
 		doGet(request,response);
 	}
 

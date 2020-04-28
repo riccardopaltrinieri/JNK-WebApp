@@ -16,7 +16,41 @@
 	</div>
 	<div>
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
- 		<h1 align="center">Illegal <b>J</b>u<b>NK</b>yard Crowdsourcing</h1>
+	</div>
+	
+	<div>
+		<h1> Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
+		Customer: <span th:text="${session.campaign.customer}"> None</span> <br>
+		State: <span th:text="${session.campaign.state}"> None </span> 
+		
+		<br> 
+		<div>
+			<span th:each="img : ${campaignImages}">
+				<a th:if="${#strings.toString(session.campaign.state) == 'Started'}" th:href="@{/InfoImage(image=${img.name})}" > <img th:src="${img.path}" th:class="cmp-img" alt="campaign+images"> </a>
+				<img th:unless="${#strings.toString(session.campaign.state) == 'Started'}" th:src="${img.path}" th:class="cmp-img" alt="campaign+images"> 
+			</span>
+			<br>
+			Image:  <span th:text="${image.name}">default</span> <br>
+			Resolution(High, Medium, Low): <span th:text="${image.name}">default</span> <br>
+			Latitude: <span th:text="${image.latitude}">default</span> <br>
+			Longitude: <span th:text="${image.longitude}">default</span> <br>
+			City: <span th:text="${image.city}">default</span> <br>
+			Region: <span th:text="${image.region}">default</span> <br>
+			Source: <span th:text="${image.source}">default</span> <br>
+		</div>
+		
+		<div>
+		<br>
+			<form action="AddAnnotation" method="POST">
+			<br>
+				Add Annotation(Max 255 characters): <br>
+				 	<input type="text" name="notes" height="50px" width="200px" required> <br>
+				Validity:	<br>
+					<input type="radio" name="validity" value="Real" required> Real <br>
+					<input type="radio" name="validity" value="False" required> False <br>
+				<input type="submit" th:name="image" th:value="${image.name}">
+			</form>
+		</div>
 	</div>
 </body>
 </html>

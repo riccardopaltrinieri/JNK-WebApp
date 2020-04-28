@@ -54,3 +54,16 @@ cmp-img:hover {
   border: 3px solid #C60000;;
   color: black;
 }
+
+#wrapper {
+    overflow: hidden;
+}
+#first {
+    width: 300px;
+    float:left;
+    border: 1px solid red;
+}
+#second {
+    border: 1px solid green;
+    overflow: hidden;
+}

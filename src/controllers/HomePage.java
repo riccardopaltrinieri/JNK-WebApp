@@ -74,8 +74,10 @@ public class HomePage extends HttpServlet {
 			}
 		} else {
 			try {
-				campaigns = cmp.getUserCampaigns(user);
+				campaigns = cmp.getUserCampaigns(user, false);
+				List<Campaign> annotatedCampaigns = cmp.getUserCampaigns(user, true);
 				request.setAttribute("campaigns", campaigns);
+				request.setAttribute("annCampaigns", annotatedCampaigns);
 			} catch (SQLException e) {
 				System.out.println(e);
 			}

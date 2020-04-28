@@ -21,14 +21,14 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.Campaign;
 import beans.Image;
-import beans.User;
 import dao.CampaignDAO;
 import dao.ImageDAO;
-import enumerations.State;
 
-
-@WebServlet({"/InfoCampaign", "/CreateCampaign"})
-public class InfoCampaign extends HttpServlet {
+/**
+ * Servlet implementation class InfoWorkerCampaign
+ */
+@WebServlet("/WorkerCampaign")
+public class InfoWorkerCampaign extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;
     
@@ -77,59 +77,27 @@ public class InfoCampaign extends HttpServlet {
 		} 
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
 		
-		//It shows the infos about the first image on default
-		if(campaign.getState() == State.Started) {
-			if(image == null && campaign.getNumImages() > 0) {
-				try {
-					image = img.getImageInfo(campaign, "1", connection);
-					request.setAttribute("image", image);
-				} catch (SQLException e) {
-					System.out.println(e);
-				}
+		if(image == null && campaign.getNumImages() > 0) {
+			try {
+				image = img.getImageInfo(campaign, "1", connection);
+				request.setAttribute("image", image);
+			} catch (SQLException e) {
+				System.out.println(e);
 			}
 		}
 		
 		List<Image> campaignImages = img.getCampaignImages(campaign);
 		request.setAttribute("campaignImages", campaignImages);
 		
-		String path = "/WEB-INF/ManagerCampaign.html";
+		String path = "/WEB-INF/WorkerCampaign.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		CampaignDAO cmp = new CampaignDAO(connection);
-		
-		String name = (String) request.getParameter("name");
-		String customer = (String) request.getParameter("customer");
-		User user = (User) request.getSession().getAttribute("user");
-		
-		try {
-			Campaign campaign = cmp.createNewCampaign(user, name, customer);
-			request.getSession().setAttribute("campaign", campaign);
-			String path = "/WEB-INF/ManagerCampaign.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			templateEngine.process(path, ctx, response.getWriter());
-			
-		} catch (SQLException e) {
-			System.out.println(e);
-			request.setAttribute("notValid", "true");
-			response.sendRedirect(request.getContextPath()+"/Home");
-		}
-		
+
+		doGet(request, response);
 	}
 
-
-	public void destroy() {
-		try {
-			if (connection != null) {
-				connection.close();
-			}
-		} catch (SQLException sqle) {
-		}
-	}
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,19 +15,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.Campaign;
 import beans.Image;
 import beans.User;
+import dao.CampaignDAO;
 import dao.ImageDAO;
+import enumerations.State;
 
-/**
- * Servlet implementation class InfoImage
- */
-@WebServlet("/InfoImage")
-public class InfoImage extends HttpServlet {
+
+@WebServlet({"/ManageCampaign", "/CreateCampaign"})
+public class InfoManagerCampaign extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;
     
@@ -58,35 +60,70 @@ public class InfoImage extends HttpServlet {
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
 	}
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
-		User user = (User) request.getSession().getAttribute("user");
-		String imageName = request.getParameter("image");
-		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
+		
+		String campaignName = request.getParameter("campaign");
+		Image image = (Image) request.getAttribute("image");
+		CampaignDAO cmp = new CampaignDAO(connection);
 		ImageDAO img = new ImageDAO();
 		
-		Image image;
-		try {
-			image = img.getImageInfo(campaign, imageName, connection);
-			request.setAttribute("image", image);
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if(campaignName != null) {
+			try {
+				request.getSession().setAttribute("campaign", cmp.getCampaign(campaignName));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} 
+		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
+		
+		//It shows the infos about the first image on default
+		if(campaign.getState() == State.Started) {
+			if(image == null && campaign.getNumImages() > 0) {
+				try {
+					image = img.getImageInfo(campaign, "1", connection);
+					request.setAttribute("image", image);
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
 		}
-
-		if(user.getRole().equals("manager")) {
-			String path = "/ManageCampaign";
-			request.getRequestDispatcher(path).forward(request, response);
-		} else {
-			String path = "/WorkerCampaign";
-			request.getRequestDispatcher(path).forward(request, response);
-		}
+		
+		List<Image> campaignImages = img.getCampaignImages(campaign);
+		request.setAttribute("campaignImages", campaignImages);
+		
+		String path = "/WEB-INF/ManagerCampaign.html";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		templateEngine.process(path, ctx, response.getWriter());
 	}
+
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
-		doGet(request,response);
+		
+		CampaignDAO cmp = new CampaignDAO(connection);
+		
+		String name = (String) request.getParameter("name");
+		String customer = (String) request.getParameter("customer");
+		User user = (User) request.getSession().getAttribute("user");
+		
+		try {
+			Campaign campaign = cmp.createNewCampaign(user, name, customer);
+			request.getSession().setAttribute("campaign", campaign);
+			String path = "/WEB-INF/ManagerCampaign.html";
+			ServletContext servletContext = getServletContext();
+			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+			templateEngine.process(path, ctx, response.getWriter());
+			
+		} catch (SQLException e) {
+			System.out.println(e);
+			request.setAttribute("notValid", "true");
+			response.sendRedirect(request.getContextPath()+"/Home");
+		}
+		
 	}
-	
+
+
 	public void destroy() {
 		try {
 			if (connection != null) {
@@ -95,5 +132,4 @@ public class InfoImage extends HttpServlet {
 		} catch (SQLException sqle) {
 		}
 	}
-
 }

@@ -79,6 +79,40 @@ public class CampaignDAO {
 		}
 	}
 
+	public List<Campaign> getUserCampaigns(User user, boolean alreadyAnnotated) throws SQLException {
+
+		List<Campaign> cmps = new ArrayList<>();
+		String query;
+		
+		if(alreadyAnnotated)
+			query = "SELECT name, customer, num_images FROM jnk.jnk_campaigns WHERE state = ? and "
+					+ "id IN ("
+					+ "SELECT id_camp FROM jnk_annotations WHERE id_user = ("
+					+ "SELECT id FROM jnk_users WHERE username = ? ))";
+		else
+			query = "SELECT name, customer, num_images FROM jnk.jnk_campaigns WHERE state = ? and "
+					+ "id NOT IN ("
+					+ "SELECT id_camp FROM jnk_annotations WHERE id_user = ("
+					+ "SELECT id FROM jnk_users WHERE username = ? ))";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setString(1, "Started");
+			pstatement.setString(2, user.getUsername());
+			
+			try (ResultSet result = pstatement.executeQuery();) {
+				while (result.next()) {
+					String name = result.getString("name");
+					String customer = result.getString("customer");
+					int numImages = result.getInt("num_images");
+					Campaign campaign = new Campaign(name, customer, "", State.Started, numImages);
+					cmps.add(campaign);
+				}
+				return cmps;
+			}
+		}
+	}
+
+
 	public void newImage(Campaign campaign, Image newImage) throws SQLException {
 		String query = "UPDATE jnk_campaigns SET num_images = ? WHERE name = ?";
 		
@@ -126,9 +160,4 @@ public class CampaignDAO {
 		}
 		return campaign;
 	}
-
-	public List<Campaign> getUserCampaigns(User user) throws SQLException {
-		return null;
-	}
-
 }

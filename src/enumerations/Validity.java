@@ -1,6 +1,6 @@
 package enumerations;
 
 public enum Validity {
-	Real,
-	False;
+	False,
+	Real;
 }
