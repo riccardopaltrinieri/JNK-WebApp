@@ -21,6 +21,8 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.Campaign;
 import beans.Image;
+import beans.User;
+import dao.AnnotationDAO;
 import dao.CampaignDAO;
 import dao.ImageDAO;
 
@@ -65,6 +67,7 @@ public class InfoWorkerCampaign extends HttpServlet {
 		
 		String campaignName = request.getParameter("campaign");
 		Image image = (Image) request.getAttribute("image");
+		User user = (User) request.getSession().getAttribute("user");
 		CampaignDAO cmp = new CampaignDAO(connection);
 		ImageDAO img = new ImageDAO();
 		
@@ -77,14 +80,15 @@ public class InfoWorkerCampaign extends HttpServlet {
 		} 
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
 		
-		if(image == null && campaign.getNumImages() > 0) {
+		if(image != null) {
+			AnnotationDAO ant = new AnnotationDAO(connection);
 			try {
-				image = img.getImageInfo(campaign, "1", connection);
-				request.setAttribute("image", image);
+				image.setAnnotated(ant.isAnnotated(image, user));
 			} catch (SQLException e) {
-				System.out.println(e);
+				e.printStackTrace();
 			}
 		}
+		
 		
 		List<Image> campaignImages = img.getCampaignImages(campaign);
 		request.setAttribute("campaignImages", campaignImages);

@@ -30,27 +30,34 @@
 				<img th:unless="${#strings.toString(session.campaign.state) == 'Started'}" th:src="${img.path}" th:class="cmp-img" alt="campaign+images"> 
 			</span>
 			<br>
-			Image:  <span th:text="${image.name}">default</span> <br>
-			Resolution(High, Medium, Low): <span th:text="${image.name}">default</span> <br>
-			Latitude: <span th:text="${image.latitude}">default</span> <br>
-			Longitude: <span th:text="${image.longitude}">default</span> <br>
-			City: <span th:text="${image.city}">default</span> <br>
-			Region: <span th:text="${image.region}">default</span> <br>
-			Source: <span th:text="${image.source}">default</span> <br>
+			
+			<span th:if="${image} != null">
+				Image:  <span th:text="${image.name}">default</span> <br>
+				Resolution(High, Medium, Low): <span th:text="${image.name}">default</span> <br>
+				Latitude: <span th:text="${image.latitude}">default</span> <br>
+				Longitude: <span th:text="${image.longitude}">default</span> <br>
+				City: <span th:text="${image.city}">default</span> <br>
+				Region: <span th:text="${image.region}">default</span> <br>
+				Source: <span th:text="${image.source}">default</span> <br>
+			</span>
 		</div>
 		
-		<div>
+		<div th:if="(${image} != null) and (${image.isAnnotated} == false)">
 		<br>
 			<form action="AddAnnotation" method="POST">
 			<br>
 				Add Annotation(Max 255 characters): <br>
-				 	<input type="text" name="notes" height="50px" width="200px" required> <br>
+				 	<textarea name="notes" maxlength="255" rows="5" cols="70" required></textarea> <br>
 				Validity:	<br>
 					<input type="radio" name="validity" value="Real" required> Real <br>
 					<input type="radio" name="validity" value="False" required> False <br>
 				<input type="submit" th:name="image" th:value="${image.name}">
 			</form>
 		</div>
+		<div th:if="(${image} != null) and (${image.isAnnotated} == true)" class="not-valid">
+			<p> "Image already annotated" </p>
+		</div>
+		
 	</div>
 </body>
 </html>

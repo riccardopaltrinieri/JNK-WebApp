@@ -2,10 +2,12 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import beans.Annotation;
 import beans.Campaign;
+import beans.Image;
 import beans.User;
 
 public class AnnotationDAO {
@@ -39,6 +41,23 @@ public class AnnotationDAO {
 			pstatement.executeUpdate();
 		}
 		
+	}
+
+
+	public boolean isAnnotated(Image image, User user) throws SQLException {
+		String query = "SELECT count(id) FROM jnk_annotations WHERE id_image = ? AND id_user = ?";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query); ) {
+			
+			pstatement.setInt(1, image.getId());
+			pstatement.setInt(2, user.getId());
+			pstatement.execute();
+
+			try (ResultSet result = pstatement.executeQuery();) {
+				result.next();
+				return result.getInt("count(id)") > 0;
+			}
+		}
 	}
 
 }

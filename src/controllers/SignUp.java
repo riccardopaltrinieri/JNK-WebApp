@@ -16,7 +16,6 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import beans.User;
 import dao.UserDAO;
 
 /**
@@ -74,10 +73,9 @@ public class SignUp extends HttpServlet {
 		String role = request.getParameter("role");
 		
 		try {
-			User user = usr.createNewUser(username, name, mailAddress, password, role);
+			usr.createNewUser(username, name, mailAddress, password, role);
 
-			String path = getServletContext().getContextPath() + "/Home";
-			request.getSession().setAttribute("user",user);
+			String path = getServletContext().getContextPath() + "/Logout";
 			request.getSession().setAttribute("notvalid", false);
 			response.sendRedirect(path);
 			

@@ -101,7 +101,7 @@ public class ImageDAO {
 		String pathImage = dbLocation + "\\" + campaign.getOwner() + "\\" + campaign.getName() + "\\" + imageName + ".jpg";
 		Image image = new Image(Integer.parseInt(imageName), pathImage);
 		
-		String query = "SELECT latitude, longitude, city, region, source, resolution, date "
+		String query = "SELECT i.id, latitude, longitude, city, region, source, resolution, date "
 				+ "FROM jnk_images as i JOIN jnk_campaigns as c ON i.id_campaign = c.id "
 				+ "WHERE c.name = ? AND i.name = ? ";
 			
@@ -113,6 +113,7 @@ public class ImageDAO {
 	
 				try (ResultSet result = pstatement.executeQuery();) {
 					result.next();
+					image.setId(result.getInt("id"));
 					image.setLatitude(result.getString("latitude"));
 					image.setLongitude(result.getString("longitude"));
 					image.setCity(result.getString("city"));

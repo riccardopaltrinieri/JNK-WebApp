@@ -21,8 +21,7 @@ public class CampaignDAO {
 	}
 
 	public Campaign createNewCampaign(User user, String name, String customer) throws SQLException {
-		String query = "INSERT INTO jnk.jnk_campaigns (name, customer, state, num_images, id_owner) VALUES (?, ?, ?, ?, "
-				+ "(SELECT id FROM jnk.jnk_users WHERE username = ?))";
+		String query = "INSERT INTO jnk.jnk_campaigns (name, customer, state, num_images, id_owner) VALUES (?, ?, ?, ?, ?)";
 		
 		try (PreparedStatement pstatement = connection.prepareStatement(query); ) {
 
@@ -30,7 +29,7 @@ public class CampaignDAO {
 			pstatement.setString(2, customer);
 			pstatement.setString(3, State.Created.toString());
 			pstatement.setInt(4, 0);
-			pstatement.setString(5, user.getUsername());
+			pstatement.setInt(5, user.getId());
 			pstatement.executeUpdate();
 			
 			return new Campaign(name, customer, user.getUsername(), State.Created, 0);
@@ -42,9 +41,9 @@ public class CampaignDAO {
 		
 		List<Campaign> cmps = new ArrayList<>();
 		
-		String query = "SELECT name, customer, state, num_images FROM jnk.jnk_campaigns WHERE id_owner = (SELECT id FROM jnk.jnk_users WHERE username = ?)";
+		String query = "SELECT name, customer, state, num_images FROM jnk.jnk_campaigns WHERE id_owner = ? ";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setString(1, user.getUsername());
+			pstatement.setInt(1, user.getId());
 			try (ResultSet result = pstatement.executeQuery();) {
 				while (result.next()) {
 					String name = result.getString("name");
@@ -87,17 +86,15 @@ public class CampaignDAO {
 		if(alreadyAnnotated)
 			query = "SELECT name, customer, num_images FROM jnk.jnk_campaigns WHERE state = ? and "
 					+ "id IN ("
-					+ "SELECT id_camp FROM jnk_annotations WHERE id_user = ("
-					+ "SELECT id FROM jnk_users WHERE username = ? ))";
+					+ "SELECT id_camp FROM jnk_annotations WHERE id_user = ? )";
 		else
 			query = "SELECT name, customer, num_images FROM jnk.jnk_campaigns WHERE state = ? and "
 					+ "id NOT IN ("
-					+ "SELECT id_camp FROM jnk_annotations WHERE id_user = ("
-					+ "SELECT id FROM jnk_users WHERE username = ? ))";
+					+ "SELECT id_camp FROM jnk_annotations WHERE id_user = ? )";
 		
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setString(1, "Started");
-			pstatement.setString(2, user.getUsername());
+			pstatement.setInt(2, user.getId());
 			
 			try (ResultSet result = pstatement.executeQuery();) {
 				while (result.next()) {

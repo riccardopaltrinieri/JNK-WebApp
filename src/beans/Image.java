@@ -6,6 +6,7 @@ import enumerations.Level;
 
 public class Image {
 
+	private int id;
 	private int name;
 	private String latitude;
 	private String longitude;
@@ -15,10 +16,27 @@ public class Image {
 	private String source;
 	private Date date;
 	private Level resolution;
+	private boolean annotated;
 	
+	public boolean isAnnotated() {
+		return annotated;
+	}
+
+	public void setAnnotated(boolean annotated) {
+		this.annotated = annotated;
+	}
+
 	public Image(int num, String path) {
 		this.name = num;
 		this.path = path;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getLatitude() {

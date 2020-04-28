@@ -4,6 +4,7 @@ import enumerations.Level;
 
 public class User {
 
+	private int id;
 	private String username;
 	private String role;
 	private String name;
@@ -12,13 +13,13 @@ public class User {
 	private Level LvlExp;
 	
 	
-	public User(String username, String role, String name, String mailAddress, String password) {
+	public User(String username, String role, String name, String mailAddress, String password, Level lvlExp) {
 		this.username = username;
 		this.role = role;
 		this.name = name;
 		this.mailAddress = mailAddress;
 		this.password = password;
-		this.LvlExp = Level.Low;
+		this.LvlExp = lvlExp;
 	}
 	
 
@@ -54,6 +55,12 @@ public class User {
 	}
 	public String getRole() {
 		return role;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

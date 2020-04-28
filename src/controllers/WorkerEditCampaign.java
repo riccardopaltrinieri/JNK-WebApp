@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import beans.Annotation;
 import beans.Campaign;
-import beans.Image;
 import beans.User;
 import dao.AnnotationDAO;
 

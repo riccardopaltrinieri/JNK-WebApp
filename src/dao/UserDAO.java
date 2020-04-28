@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import enumerations.Level;
+
 import java.sql.*;
 
 
@@ -15,7 +17,7 @@ public class UserDAO {
 		this.con = connection;
 	}
 	
-	public User createNewUser(String username, String name, String mailAddress, String password, String role) throws SQLException {
+	public void createNewUser(String username, String name, String mailAddress, String password, String role) throws SQLException {
 
 		ImageDAO img = new ImageDAO();
 		String query = "INSERT INTO jnk.jnk_users (username, mail_address, name, password, role) VALUES (?, ?, ?, ?, ?);";
@@ -29,15 +31,14 @@ public class UserDAO {
 			pstatement.setString(5, role);
 			pstatement.executeUpdate();
 			
-			User user = new User(username, role, name, mailAddress, password);
+			User user = new User(username, role, name, mailAddress, password, Level.Low);
 			img.setUserImage(user, null);
-			return user;
 		}
 	}
 	
 	public User checkCredentials(String username, String pwd) throws SQLException {
 		
-		String query = "SELECT name, mail_address, password, lvl_exp, propic, role FROM jnk_users WHERE username = ? AND password = ?";
+		String query = "SELECT id, name, mail_address, password, lvl_exp, propic, role FROM jnk_users WHERE username = ? AND password = ?";
 		
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 			pstatement.setString(1, username);
@@ -51,7 +52,9 @@ public class UserDAO {
 					String name = result.getString("name");
 					String mailAddress = result.getString("mail_address");
 					String password = result.getString("password");
-					User user = new User(username, role, name, mailAddress, password);
+					Level lvlExp = Level.valueOf(result.getString("lvl_exp"));
+					User user = new User(username, role, name, mailAddress, password, lvlExp);
+					user.setId(result.getInt("id"));
 					return user;
 				}
 			}
@@ -59,7 +62,7 @@ public class UserDAO {
 	}
 	
 
-	public User editUser(String usr, String username, String name, String mailAddress, String password, String role) throws SQLException {
+	public User editUser(String usr, String username, String name, String mailAddress, String password, String role, Level level) throws SQLException {
 
 		String query = "UPDATE jnk.jnk_users SET username = ?, mail_address = ?, name = ?, password = ? WHERE username = ?;";
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
@@ -71,7 +74,7 @@ public class UserDAO {
 			pstatement.setString(5, usr);
 			pstatement.executeUpdate();
 			
-			User user = new User(username, role, name, mailAddress, password);
+			User user = new User(username, role, name, mailAddress, password, level);
 			return user;
 		}
 	}
