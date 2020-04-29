@@ -55,7 +55,7 @@
 				<div th:if="${notValid == 'true'}" class="not-valid">
 					<p> "This Campaign already exists, please use another name. " </p>
 				</div>
-				Name:  <input type= "text" name="name" required> <br>
+				Name:  <input type= "text" name="name" pattern="[a-zA-Z0-9-_\.]{1,20}$" title="only letters, numbers '_'(underscore) and '.'(dot) are accepted" required> <br>
 				Customer:  <input type= "text" name="customer" required> <br>
 				<input type="submit" value="CreateCampaign">
 			</form>

@@ -32,13 +32,13 @@ public class UserDAO {
 			pstatement.executeUpdate();
 			
 			User user = new User(username, role, name, mailAddress, password, Level.Low);
-			img.setUserImage(user, null);
+			img.addUserImage(user, null);
 		}
 	}
 	
 	public User checkCredentials(String username, String pwd) throws SQLException {
 		
-		String query = "SELECT id, name, mail_address, password, lvl_exp, role FROM jnk_users WHERE username = ? AND password = ?";
+		String query = "SELECT id, name, mail_address, password, role FROM jnk_users WHERE username = ? AND password = ?";
 		
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 			pstatement.setString(1, username);
@@ -52,7 +52,7 @@ public class UserDAO {
 					String name = result.getString("name");
 					String mailAddress = result.getString("mail_address");
 					String password = result.getString("password");
-					Level lvlExp = Level.valueOf(result.getString("lvl_exp"));
+					Level lvlExp = getUserExperience(result.getInt("id"));
 					User user = new User(username, role, name, mailAddress, password, lvlExp);
 					user.setId(result.getInt("id"));
 					return user;
@@ -61,6 +61,20 @@ public class UserDAO {
 		}
 	}
 	
+
+	private Level getUserExperience(int id) throws SQLException {
+		
+		String query = "SELECT count(id) FROM jnk_annotations WHERE id_user = ?";
+		
+		try(PreparedStatement pstatement = con.prepareStatement(query)) {
+			pstatement.setInt(1, id);
+			pstatement.execute();
+			try (ResultSet result = pstatement.executeQuery();) {
+				result.next();
+				return Level.getLevel(result.getInt("count(id)"));
+			}
+		}
+	}
 
 	public User editUser(String usr, String username, String name, String mailAddress, String password, String role, Level level) throws SQLException {
 

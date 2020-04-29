@@ -95,18 +95,12 @@ public class InfoManagerCampaign extends HttpServlet {
 		User user = (User) request.getSession().getAttribute("user");
 		
 		try {
-			Campaign campaign = cmp.createNewCampaign(user, name, customer);
-			request.getSession().setAttribute("campaign", campaign);
-			String path = "/WEB-INF/ManagerCampaign.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			templateEngine.process(path, ctx, response.getWriter());
-			
+			cmp.createNewCampaign(user, name, customer);
 		} catch (SQLException e) {
 			System.out.println(e);
 			request.setAttribute("notValid", "true");
-			response.sendRedirect(request.getContextPath()+"/Home");
 		}
+		response.sendRedirect(request.getContextPath()+"/Home");
 		
 	}
 

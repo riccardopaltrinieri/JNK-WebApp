@@ -3,6 +3,8 @@ package beans;
 import enumerations.State;
 
 public class Campaign {
+	
+	private int id;
 	private String name;
 	private String customer;
 	private String owner;
@@ -46,6 +48,12 @@ public class Campaign {
 	}
 	public void setNumImages(int numImages) {
 		this.numImages = numImages;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 }

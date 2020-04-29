@@ -75,7 +75,7 @@ public class InfoImage extends HttpServlet {
 			request.setAttribute("image", image);
 			
 			if(user.getRole().equals("manager")) {
-				List<Annotation> annotations = ant.getAnnotations(image);
+				List<Annotation> annotations = ant.getAnnotationsManager(image);
 				request.setAttribute("annotations", annotations);
 				String path = "/ManageCampaign";
 				request.getRequestDispatcher(path).forward(request, response);

@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -18,15 +19,14 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.Campaign;
-import beans.User;
+import beans.CampaignStats;
 import dao.CampaignDAO;
 
-
 /**
- * Servlet implementation class HomePage
+ * Servlet implementation class Statistics
  */
-@WebServlet("/Home")
-public class HomePage extends HttpServlet {
+@WebServlet("/Statistics")
+public class Statistics extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;
     
@@ -58,32 +58,18 @@ public class HomePage extends HttpServlet {
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
 	}
-
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User user = (User) request.getSession().getAttribute("user");
+		
 		CampaignDAO cmp = new CampaignDAO(connection);
-		List<Campaign> campaigns;
-		
-		if(user.getRole().equals("manager")) {
-			try {
-				campaigns = cmp.getManagerCampaigns(user);
-				request.setAttribute("campaigns", campaigns);
-			} catch (SQLException e) {
-				System.out.println(e);
-			}
-		} else {
-			try {
-				campaigns = cmp.getUserCampaigns(user, false);
-				List<Campaign> annotatedCampaigns = cmp.getUserCampaigns(user, true);
-				request.setAttribute("campaigns", campaigns);
-				request.setAttribute("annCampaigns", annotatedCampaigns);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
+		try {
+			CampaignStats stats = cmp.getStats(campaign);
+			request.getSession().setAttribute("stats", stats);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		
-		String path = "/index.html";
+		String path = "/WEB-INF/CampaignStatistics.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		templateEngine.process(path, ctx, response.getWriter());

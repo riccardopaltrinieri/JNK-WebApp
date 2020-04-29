@@ -16,7 +16,15 @@
 	</div>
 	<div>
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
- 		<h1 align="center">Illegal <b>J</b>u<b>NK</b>yard Crowdsourcing</h1>
+	</div>
+	
+	<div>
+		<h1> Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
+		<br>
+		<i>Images number: </i><span th:text="${session.stats.numImages}"> 0 </span> <br>
+		<i>Annotations number: </i><span th:text="${session.stats.annotations}"> 0</span> <br>
+		<i>Average annotations per image: </i><span th:text="${session.stats.average}"> 0</span> <br>
+		<i>Images with conflicts: </i><span th:text="${session.stats.conflicts}"> 0</span> <br>
 	</div>
 </body>
 </html>

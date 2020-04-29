@@ -30,22 +30,24 @@
 				th:if="${#strings.toString(session.campaign.state) == 'Started'}" 
 				th:name="action" th:value="Close">
 		</form>
-		
+		<div th:if="${#strings.toString(session.campaign.state) != 'Created'}">
+			<h4><a th:href="@{/Statistics}"> Statistics </a></h4>
+		</div>
 		<br> 
 		<div>
 			<span th:each="img : ${campaignImages}">
-				<a th:if="${#strings.toString(session.campaign.state) != 'Created'}" th:href="@{/InfoImage(image=${img.name})}" > <img th:src="${img.path}" th:class="cmp-img" alt="campaign+images"> </a>
-				<img th:unless="${#strings.toString(session.campaign.state) == 'Started'}" th:src="${img.path}" th:class="cmp-img" alt="campaign+images"> 
+				<a th:if="${#strings.toString(session.campaign.state) != 'Created'}" th:href="@{/InfoImage(image=${img.name})}" > <img th:src="@{${img.path}}" th:class="cmp-img" alt="campaign+images"> </a>
+				<img th:unless="${#strings.toString(session.campaign.state) == 'Started'}" th:src="@{${img.path}}" th:class="cmp-img" alt="campaign+images"> 
 			</span>
 			<div th:if="${#strings.toString(session.campaign.state) != 'Created' and image != null}">
 					<br>
 					<h4> Image  <span th:text="${image.name}">default</span> details </h4>
-					Resolution(High, Medium, Low): <span th:text="${image.name}">default</span> <br>
-					Latitude: <span th:text="${image.latitude}">default</span> <br>
-					Longitude: <span th:text="${image.longitude}">default</span> <br>
-					City: <span th:text="${image.city}">default</span> <br>
-					Region: <span th:text="${image.region}">default</span> <br>
-					Source: <span th:text="${image.source}">default</span> <br>
+					<i>Resolution(High, Medium, Low): </i><span th:text="${image.name}">default</span> <br>
+					<i>Latitude: </i><span th:text="${image.latitude}">default</span> <br>
+					<i>Longitude: </i><span th:text="${image.longitude}">default</span> <br>
+					<i>City: </i><span th:text="${image.city}">default</span> <br>
+					<i>Region: </i><span th:text="${image.region}">default</span> <br>
+					<i>Source: </i><span th:text="${image.source}">default</span> <br>
 					
 					<h4>Annotations</h4>
 					<div th:each="ann : ${annotations}">

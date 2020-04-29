@@ -20,15 +20,18 @@ import java.util.NoSuchElementException;
 
 public class ImageDAO {
 
-	private final String dbLocation = "C:\\Users\\ricky\\Documents\\GitHub\\tiwproject2020\\WebContent\\images\\";
-	private final String profilePicturesDir = "profilePictures\\";
+	private static final String dbLocation = "C:\\Users\\ricky\\Documents\\GitHub\\tiwproject2020\\WebContent\\WEB-INF\\";
+	private static final String profilePicturesDir = "images\\profilePictures\\";
+	private static final String campaignPicturesDir = "images\\campaigns\\";
+	private static final String webProfilePicturesDir = "/images/profilePictures/";
+	private static final String webCampaignPicturesDir = "/images/campaigns/";
 	
 	public ImageDAO() {
 		super();
 	}
 	
 	
-	public void setUserImage(User user, Part image) {
+	public void addUserImage(User user, Part image) {
 
 		File file = new File(dbLocation + profilePicturesDir + user.getUsername() + ".jpg");
 		if(file.exists()) file.delete();
@@ -54,33 +57,22 @@ public class ImageDAO {
 
 	public void addCampaignImage(Campaign campaign, Part image) {
 		
-		File file = new File(dbLocation + campaign.getOwner());
-		if(!file.exists()) file.mkdir();
-		int num = campaign.getNumImages();
-		
-		if(num == 0) {
-			file = new File(file.toString() + "\\" + campaign.getName());
-			file.mkdir();
+		try (InputStream input = image.getInputStream()) {
 			
-			num++;
+			File file = new File(dbLocation + campaignPicturesDir + campaign.getOwner() + "\\" + campaign.getName());
+			if(!file.exists()) file.mkdirs();
+			
+			int num = campaign.getNumImages() + 1;
+			
 			file = new File(file.toString()+ "\\" + num + ".jpg");
-			try (InputStream input = image.getInputStream()) {
-			    Files.copy(input, file.toPath());
-			    
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			num++;
-			file = new File(file.toString()+ "\\" + campaign.getName() + "\\" + num + ".jpg");
-			try (InputStream input = image.getInputStream()) {
-			    Files.copy(input, file.toPath());
-			    
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		    Files.copy(input, file.toPath());
+		    campaign.setNumImages(num);
+		    
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
 		}
-		campaign.setNumImages(num);
 	}
 	
 
@@ -89,7 +81,7 @@ public class ImageDAO {
 		List<Image> campaignImages = new ArrayList<>();
 		
 		for(int num = 1; num <= campaign.getNumImages(); num++) {
-			String pathImage = dbLocation + "\\" + campaign.getOwner() + "\\" + campaign.getName() + "\\" + num + ".jpg";
+			String pathImage = webCampaignPicturesDir + campaign.getOwner() + "/" + campaign.getName() + "/" + num + ".jpg";
 			campaignImages.add(new Image(num, pathImage));
 		}
 		return campaignImages;
@@ -97,17 +89,17 @@ public class ImageDAO {
 	
 	
 	public Image getImageInfo(Campaign campaign, String imageName, Connection connection) throws SQLException {
-		
-		String pathImage = dbLocation + "\\" + campaign.getOwner() + "\\" + campaign.getName() + "\\" + imageName + ".jpg";
+
+		String pathImage = webCampaignPicturesDir + campaign.getOwner() + "/" + campaign.getName() + "/" + imageName + ".jpg";
 		Image image = new Image(Integer.parseInt(imageName), pathImage);
 		
-		String query = "SELECT i.id, latitude, longitude, city, region, source, resolution, date "
-				+ "FROM jnk_images as i JOIN jnk_campaigns as c ON i.id_campaign = c.id "
-				+ "WHERE c.name = ? AND i.name = ? ";
+		String query = "SELECT id, latitude, longitude, city, region, source, resolution, date "
+					 + "FROM jnk_images "
+					 + "WHERE id_campaign = ? AND name = ? ";
 			
 			try (PreparedStatement pstatement = connection.prepareStatement(query); ) {
 	
-				pstatement.setString(1, campaign.getName());
+				pstatement.setInt(1, campaign.getId());
 				pstatement.setInt(2, Integer.parseInt(imageName));
 				pstatement.execute();
 	
@@ -128,7 +120,7 @@ public class ImageDAO {
 	
 	public String getUserImage(User user) {
 		
-		File file = new File(dbLocation + profilePicturesDir + user.getUsername() + ".jpg");
+		File file = new File(webProfilePicturesDir + user.getUsername() + ".jpg");
 		if(file.exists()) return file.toString();
 		else {
 			throw new NoSuchElementException("There isn't any profile picture for the user");

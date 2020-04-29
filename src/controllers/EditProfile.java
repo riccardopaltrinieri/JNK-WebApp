@@ -94,7 +94,7 @@ public class EditProfile extends HttpServlet {
 			
 			user = usr.editUser(user.getUsername(), username, name, mailAddress, password, user.getRole(), user.getLvlExp());
 			
-			if(image != null) img.setUserImage(user, image);
+			if(image != null) img.addUserImage(user, image);
 			
 			System.out.println("query successfully executed");
 			request.getSession().setAttribute("user",user);

@@ -19,6 +19,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import beans.Annotation;
 import beans.Campaign;
 import beans.Image;
 import beans.User;
@@ -68,6 +69,7 @@ public class InfoWorkerCampaign extends HttpServlet {
 		String campaignName = request.getParameter("campaign");
 		Image image = (Image) request.getAttribute("image");
 		User user = (User) request.getSession().getAttribute("user");
+		AnnotationDAO ant = new AnnotationDAO(connection);
 		CampaignDAO cmp = new CampaignDAO(connection);
 		ImageDAO img = new ImageDAO();
 		
@@ -81,9 +83,15 @@ public class InfoWorkerCampaign extends HttpServlet {
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
 		
 		if(image != null) {
-			AnnotationDAO ant = new AnnotationDAO(connection);
 			try {
-				image.setAnnotated(ant.isAnnotated(image, user));
+				Annotation annotation = ant.getAnnotationWorker(image, user);
+				
+				if(annotation != null) {
+					image.setAnnotated(true);
+					request.setAttribute("annotation", annotation);
+				} else 
+					image.setAnnotated(false);
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
