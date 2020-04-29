@@ -24,7 +24,6 @@ import beans.Image;
 import beans.User;
 import dao.CampaignDAO;
 import dao.ImageDAO;
-import enumerations.State;
 
 
 @WebServlet({"/ManageCampaign", "/CreateCampaign"})
@@ -64,7 +63,6 @@ public class InfoManagerCampaign extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String campaignName = request.getParameter("campaign");
-		Image image = (Image) request.getAttribute("image");
 		CampaignDAO cmp = new CampaignDAO(connection);
 		ImageDAO img = new ImageDAO();
 		
@@ -77,17 +75,6 @@ public class InfoManagerCampaign extends HttpServlet {
 		} 
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
 		
-		//It shows the infos about the first image on default
-		if(campaign.getState() == State.Started) {
-			if(image == null && campaign.getNumImages() > 0) {
-				try {
-					image = img.getImageInfo(campaign, "1", connection);
-					request.setAttribute("image", image);
-				} catch (SQLException e) {
-					System.out.println(e);
-				}
-			}
-		}
 		
 		List<Image> campaignImages = img.getCampaignImages(campaign);
 		request.setAttribute("campaignImages", campaignImages);

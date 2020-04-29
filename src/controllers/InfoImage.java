@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -17,9 +18,11 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import beans.Annotation;
 import beans.Campaign;
 import beans.Image;
 import beans.User;
+import dao.AnnotationDAO;
 import dao.ImageDAO;
 
 /**
@@ -63,23 +66,28 @@ public class InfoImage extends HttpServlet {
 		User user = (User) request.getSession().getAttribute("user");
 		String imageName = request.getParameter("image");
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
+		AnnotationDAO ant = new AnnotationDAO(connection);
 		ImageDAO img = new ImageDAO();
 		
 		Image image;
 		try {
 			image = img.getImageInfo(campaign, imageName, connection);
 			request.setAttribute("image", image);
+			
+			if(user.getRole().equals("manager")) {
+				List<Annotation> annotations = ant.getAnnotations(image);
+				request.setAttribute("annotations", annotations);
+				String path = "/ManageCampaign";
+				request.getRequestDispatcher(path).forward(request, response);
+			} else {
+				String path = "/WorkerCampaign";
+				request.getRequestDispatcher(path).forward(request, response);
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		if(user.getRole().equals("manager")) {
-			String path = "/ManageCampaign";
-			request.getRequestDispatcher(path).forward(request, response);
-		} else {
-			String path = "/WorkerCampaign";
-			request.getRequestDispatcher(path).forward(request, response);
-		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

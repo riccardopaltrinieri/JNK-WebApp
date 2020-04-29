@@ -59,11 +59,15 @@ cmp-img:hover {
     overflow: hidden;
 }
 #first {
-    width: 300px;
+    width: 49%;
+    height: 500px;
     float:left;
-    border: 1px solid red;
+    border: 3px solid #d0bf4e;
 }
 #second {
-    border: 1px solid green;
+    width: 50%;
+    height: 500px;
+    border: 3px solid #d0bf4e;
+    float: right;
     overflow: hidden;
 }
