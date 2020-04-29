@@ -16,6 +16,7 @@ import beans.Annotation;
 import beans.Campaign;
 import beans.User;
 import dao.AnnotationDAO;
+import dao.UserDAO;
 import enumerations.Validity;
 
 /**
@@ -57,16 +58,19 @@ public class WorkerEditCampaign extends HttpServlet {
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
 		User user = (User) request.getSession().getAttribute("user");
 		AnnotationDAO ant = new AnnotationDAO(connection);
+		UserDAO usr = new UserDAO(connection);
 		
 		
 		int imageName = Integer.parseInt(request.getParameter("image"));
 		int validity = Validity.valueOf(request.getParameter("validity")).ordinal();
 		String trust = user.getLvlExp().toString();
 		String notes = request.getParameter("notes");
-		
 		Annotation annotation = new Annotation(user.getUsername(), validity, trust, notes);
+		
 		try {
 			ant.addAnnotation(annotation, user, campaign, imageName);
+			//update the level of experience after any annotation
+			user.setLvlExp(usr.getUserExperience(user.getId()));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

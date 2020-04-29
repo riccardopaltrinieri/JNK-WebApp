@@ -18,6 +18,8 @@
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
 	</div>
 	
+	Go back to <a href="ManagerCampaign.html" th:href="@{/ManageCampaign(campaign=${session.campaign.name})}" th:text="${session.campaign.name}"> default </a>
+	
 	<div>
 		<h1> Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
 		<br>

@@ -15,16 +15,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 public class ImageDAO {
 
-	private static final String dbLocation = "C:\\Users\\ricky\\Documents\\GitHub\\tiwproject2020\\WebContent\\WEB-INF\\";
-	private static final String profilePicturesDir = "images\\profilePictures\\";
-	private static final String campaignPicturesDir = "images\\campaigns\\";
-	private static final String webProfilePicturesDir = "/images/profilePictures/";
-	private static final String webCampaignPicturesDir = "/images/campaigns/";
+	private static final String dbLocation = "C:\\Users\\ricky\\Documents\\GitHub\\tiwproject2020\\WebContent\\WEB-INF\\images\\";
+	private static final String profilePicturesDir = "profilePictures\\";
+	private static final String campaignPicturesDir = "campaigns\\";
 	
 	public ImageDAO() {
 		super();
@@ -81,7 +78,7 @@ public class ImageDAO {
 		List<Image> campaignImages = new ArrayList<>();
 		
 		for(int num = 1; num <= campaign.getNumImages(); num++) {
-			String pathImage = webCampaignPicturesDir + campaign.getOwner() + "/" + campaign.getName() + "/" + num + ".jpg";
+			String pathImage = campaignPicturesDir + campaign.getOwner() + "\\" + campaign.getName() + "\\" + num;
 			campaignImages.add(new Image(num, pathImage));
 		}
 		return campaignImages;
@@ -90,8 +87,7 @@ public class ImageDAO {
 	
 	public Image getImageInfo(Campaign campaign, String imageName, Connection connection) throws SQLException {
 
-		String pathImage = webCampaignPicturesDir + campaign.getOwner() + "/" + campaign.getName() + "/" + imageName + ".jpg";
-		Image image = new Image(Integer.parseInt(imageName), pathImage);
+		Image image = new Image(Integer.parseInt(imageName), "");
 		
 		String query = "SELECT id, latitude, longitude, city, region, source, resolution, date "
 					 + "FROM jnk_images "
@@ -118,13 +114,19 @@ public class ImageDAO {
 	}
 	
 	
-	public String getUserImage(User user) {
+	public File getCampaignImage(String requestedImage, Campaign campaign)  {
 		
-		File file = new File(webProfilePicturesDir + user.getUsername() + ".jpg");
-		if(file.exists()) return file.toString();
-		else {
-			throw new NoSuchElementException("There isn't any profile picture for the user");
-		}
+		String pathImage = campaignPicturesDir + campaign.getOwner() + "\\" + campaign.getName() + "\\" + requestedImage + ".jpg";
+		
+		return new File(dbLocation, pathImage);
+	}
+
+
+	public File getUserImage(String username) {
+
+		String pathImage = profilePicturesDir + "\\" + username + ".jpg";
+		
+		return new File(dbLocation, pathImage);
 	}
 
 }

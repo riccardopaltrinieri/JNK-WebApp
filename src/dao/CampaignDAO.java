@@ -177,8 +177,8 @@ public class CampaignDAO {
 		}
 		stats.setAverage();
 		
-		query = "SELECT count(a1.id_image) "
-			  + "FROM jnk_annotations as a1, jnk_annotations as a2  "
+		query = "SELECT count(distinct a1.id_image) "
+			  + "FROM jnk_annotations as a1, jnk_annotations as a2 "
 			  + "WHERE a1.id_image = a2.id_image "
 			  + "AND a1.validity <> a2.validity "
 			  + "AND a1.id_camp = ?";
@@ -190,7 +190,6 @@ public class CampaignDAO {
 				stats.setConflicts(result.getInt(1));
 			}
 		}
-		System.out.println(stats.getAnnotations() + stats.getAverage() + stats.getNumImages() + stats.getConflicts());
 		
 		return stats;
 	}

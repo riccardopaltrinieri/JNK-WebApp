@@ -63,11 +63,6 @@ public class EditProfile extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		User user = (User) request.getSession().getAttribute("user");
-		ImageDAO img = new ImageDAO();
-		
-		request.setAttribute("avatar", img.getUserImage(user));
-		
 		String path = "/WEB-INF/EditProfile.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());

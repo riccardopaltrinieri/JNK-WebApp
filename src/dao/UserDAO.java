@@ -62,7 +62,7 @@ public class UserDAO {
 	}
 	
 
-	private Level getUserExperience(int id) throws SQLException {
+	public Level getUserExperience(int id) throws SQLException {
 		
 		String query = "SELECT count(id) FROM jnk_annotations WHERE id_user = ?";
 		

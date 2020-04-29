@@ -35,9 +35,11 @@
 		</div>
 		<br> 
 		<div>
-			<span th:each="img : ${campaignImages}">
-				<a th:if="${#strings.toString(session.campaign.state) != 'Created'}" th:href="@{/InfoImage(image=${img.name})}" > <img th:src="@{${img.path}}" th:class="cmp-img" alt="campaign+images"> </a>
-				<img th:unless="${#strings.toString(session.campaign.state) == 'Started'}" th:src="@{${img.path}}" th:class="cmp-img" alt="campaign+images"> 
+			<span th:each="img : ${#numbers.sequence( 1, session.campaign.numImages, 1)}">
+				<a th:if="${#strings.toString(session.campaign.state) != 'Created'}" th:href="@{/InfoImage(image=${img})}" > 
+					<img th:src="@{/GetImage(image=${img})}" th:class="cmp-img" alt="campaign+images"> 
+				</a>
+				<img th:unless="${#strings.toString(session.campaign.state) != 'Created'}" th:src="@{/GetImage(image=${img})}" th:class="cmp-img" alt="campaign+images"> 
 			</span>
 			<div th:if="${#strings.toString(session.campaign.state) != 'Created' and image != null}">
 					<br>

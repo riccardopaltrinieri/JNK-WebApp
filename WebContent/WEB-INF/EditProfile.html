@@ -25,7 +25,7 @@
 	
 	<div>
 	<img th:if="${session.user.role=='worker'}" th:alt="profile+picture"
-		th:src="@{${avatar}}" alt="default+picture" class="logo"> <br>
+		th:src="@{/GetImage(userImage=${session.user.username})}" alt="default+picture" class="logo"> <br>
 	Complete Name:  <span th:text="${session.user.name}">default</span> <br>
 	E-mail address: <span th:text="${session.user.mailAddress}">default</span> <br>
 	Username: <span th:text="${session.user.username}">default</span> <br>

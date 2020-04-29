@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -19,11 +17,8 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import beans.Campaign;
-import beans.Image;
 import beans.User;
 import dao.CampaignDAO;
-import dao.ImageDAO;
 
 
 @WebServlet({"/ManageCampaign", "/CreateCampaign"})
@@ -64,7 +59,7 @@ public class InfoManagerCampaign extends HttpServlet {
 		
 		String campaignName = request.getParameter("campaign");
 		CampaignDAO cmp = new CampaignDAO(connection);
-		ImageDAO img = new ImageDAO();
+		//ImageDAO img = new ImageDAO();
 		
 		if(campaignName != null) {
 			try {
@@ -72,12 +67,7 @@ public class InfoManagerCampaign extends HttpServlet {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		} 
-		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
-		
-		
-		List<Image> campaignImages = img.getCampaignImages(campaign);
-		request.setAttribute("campaignImages", campaignImages);
+		}
 		
 		String path = "/WEB-INF/ManagerCampaign.html";
 		ServletContext servletContext = getServletContext();

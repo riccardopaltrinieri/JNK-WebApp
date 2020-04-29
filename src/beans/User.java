@@ -44,8 +44,8 @@ public class User {
 	public Level getLvlExp() {
 		return LvlExp;
 	}
-	public void setLvlExp(String lvlExp) {
-		LvlExp = Level.valueOf(lvlExp);
+	public void setLvlExp(Level level) {
+		LvlExp = level;
 	}
 	public String getUsername() {
 		return username;
