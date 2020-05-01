@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="ISO-8859-1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link href="../css/mystyle.css" rel="stylesheet">
   <link href="css/mystyle.css" rel="stylesheet">
   <title>JNK: SignUp</title>
 </head>
 <body>
-
+	<!-- *********** HEADER ************** -->
 	<div class="topnav">
 		<a th:href="@{/Home}" class="active">Home</a>
+ 		<span class="nav-item"><b>J</b>u<b>NK</b>yard Crowdsourcing</span>>
 	 	<span th:switch="${session.user}" class="nav-right">
 			<a th:case="null" th:href="@{/LogIn}"> Log In</a>
 			<span th:case="*">
@@ -18,29 +22,56 @@
 		</span>
 	</div>
 	<div>
-		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
+		<img src="../images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
 	</div>
-	<h1>Sign Up to start helping the environment</h1>
+	<!-- ************ /HEADER ************ -->
 	
-	<form action="SignUp" method ="POST">
-	
-	<div th:if="${session.notvalid == true}" class="not-valid">
-		<p> "Username or mail address already used" </p>
+	<div class="container-lg">
+			<h1 class="m-3 text-center">Sign Up to start helping the environment</h1>
+			
+			<div th:if="${notvalid == 'true'}" class="alert-warning mt-5 ml-3">
+				<p> "Username or mail address already used" </p>
+			</div>
+			
+			<form action='SignUp' method="POST" class="form-group jnk-col">
+				
+				<div class="row">
+				    <label class="col-sm-2 col-form-label">Username: </label>
+				    <div class="col-sm-10">
+			        	<input type="text" name="username"  pattern="[a-zA-Z0-9-_\.]{1,20}$" placeholder="ex.ample_99" class="form-control" required>
+			        	<small class="form-text text-muted col-sm-10 mb-2">only letters, numbers '_'(underscore) and '.'(dot) are accepted</small>
+			      	</div>
+		      	</div>
+				<div class="row">
+				    <label class="col-sm-2 col-form-label">Name: </label>
+				    <div class="col-sm-10">
+			        	<input type="text" name="name" placeholder="e-firstname e-lastname" class="form-control" required>
+			      	</div>
+		      	</div>
+		      	<div class="row">
+				    <label class="col-sm-2 col-form-label">E-mail: </label>
+				    <div class="col-sm-10">
+		        		<input type="email" name="mailAddress" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="example@mail.com" class="form-control" required>
+			      	</div>
+		      	</div>
+		      	<div class="row">
+				    <label class="col-sm-2 col-form-label">Password: </label>
+				    <div class="col-sm-10">
+						<input type = "password" name="pwd" class="form-control" placeholder="**********" required>
+			      	</div>
+		      	</div>
+				<div class="row">
+				    <label class="col-sm-2 col-form-label">Role: </label>
+				    <div class="col-sm-10">
+						<select name="role" class="form-control">
+							<option value="worker" > Worker </option>
+							<option value="manager"> Manager </option>
+						</select>
+					</div>
+				</div>
+				<input type="submit" class="btn btn-block btn-secondary mt-5" value="Sign Up">
+			</form>
 	</div>
-	
-	E-mail address: <input type="email" name="mailAddress" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Format: example@mail.com.*" required> <br>
-	Complete Name:  <input type= "text" name="name" required> <br>
-	Username: <input type="text" name="username"  pattern="[a-zA-Z0-9-_\.]{1,20}$" title="only letters, numbers '_'(underscore) and '.'(dot) are accepted" required> <br>
-	Password: <input type = "password" name="pwd" required><br>
-	<fieldset>
-	<legend>Role</legend>
-		<select name="role" >
-			<option value="worker" selected="selected">Worker </option>
-			<option value="manager"> Manager </option>
-		</select>
-	</fieldset>
-	<input type="submit" value="SignUp">
-	</form>
 
 </body>
 </html>

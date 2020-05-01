@@ -90,8 +90,8 @@ public class InfoManagerCampaign extends HttpServlet {
 			System.out.println(e);
 			request.setAttribute("notValid", "true");
 		}
-		response.sendRedirect(request.getContextPath()+"/Home");
 		
+		response.sendRedirect(request.getContextPath()+"/Home");
 	}
 
 

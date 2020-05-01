@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="ISO-8859-1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link href="../css/mystyle.css" rel="stylesheet">
   <link href="css/mystyle.css" rel="stylesheet">
   <title>JNK: Campaign View</title>
 </head>
 <body>
+	<!-- ******************************** HEADER *************************** -->
 	<div class="topnav">
 		<a th:href="@{/Home}" class="active">Home</a>
 		<span class="nav-right"><a th:href="@{/EditProfile}" class="nav-right">Account</a></span>
@@ -15,57 +19,70 @@
 		</span>
 	</div>
 	<div>
-		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
+		<img src="../images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
 	</div>
+	<!-- ******************************* /HEADER *************************** -->
 	
-	<div>
-		<h1> Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
-		Customer: <span th:text="${session.campaign.customer}"> None</span> <br>
-		State: <span th:text="${#strings.toString(session.campaign.state)}"> None </span> 
-		<form action="UpdateCampaign" method="GET">
-			<input type="submit" 
-				th:if="${#strings.toString(session.campaign.state) == 'Created' and session.campaign.numImages >= 1}" 
-				th:name="action" th:value="Start">
-			<input type="submit" 
-				th:if="${#strings.toString(session.campaign.state) == 'Started'}" 
-				th:name="action" th:value="Close">
-		</form>
-		<div th:if="${#strings.toString(session.campaign.state) != 'Created'}">
-			<h4><a th:href="@{/Statistics}"> Statistics </a></h4>
+	<div class="container-fluid">
+	
+		<div class="row">
+			<ul class="list-unstyled col-4">
+				<li><h1 class="col">Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
+				<li>Customer: <span th:text="${session.campaign.customer}"> None</span>
+				<li>State: <span th:text="${#strings.toString(session.campaign.state)}"> None </span> 
+			</ul>
+			<div class="col-3 mt-2">
+				<form action="UpdateCampaign" method="GET">
+					<input type="submit" 
+						th:if="${#strings.toString(session.campaign.state) == 'Created' and session.campaign.numImages >= 1}" 
+						name="action" value="Start" class="btn btn-success">
+					<input type="submit" 
+						th:if="${#strings.toString(session.campaign.state) == 'Started'}" 
+						name="action" value="Close" class="btn btn-danger">
+				</form>
+			</div>
+			<div class="col-2 mt-2">
+				<div th:if="${#strings.toString(session.campaign.state) != 'Created'}">
+					<a th:href="@{/Statistics}"> <button type="button" class="btn btn-info">Statistics</button></a>
+				</div>
+			</div>
 		</div>
-		<br> 
-		<div>
-			<span th:each="img : ${#numbers.sequence( 1, session.campaign.numImages, 1)}">
+		
+		<div class="row">
+			<div class="col-sm" th:each="img : ${#numbers.sequence( 1, session.campaign.numImages, 1)}">
 				<a th:if="${#strings.toString(session.campaign.state) != 'Created'}" th:href="@{/InfoImage(image=${img})}" > 
 					<img th:src="@{/GetImage(image=${img})}" th:class="cmp-img" alt="campaign+images"> 
 				</a>
 				<img th:unless="${#strings.toString(session.campaign.state) != 'Created'}" th:src="@{/GetImage(image=${img})}" th:class="cmp-img" alt="campaign+images"> 
-			</span>
-			<div th:if="${#strings.toString(session.campaign.state) != 'Created' and image != null}">
-					<br>
-					<h4> Image  <span th:text="${image.name}">default</span> details </h4>
-					<i>Resolution(High, Medium, Low): </i><span th:text="${image.name}">default</span> <br>
-					<i>Latitude: </i><span th:text="${image.latitude}">default</span> <br>
-					<i>Longitude: </i><span th:text="${image.longitude}">default</span> <br>
-					<i>City: </i><span th:text="${image.city}">default</span> <br>
-					<i>Region: </i><span th:text="${image.region}">default</span> <br>
-					<i>Source: </i><span th:text="${image.source}">default</span> <br>
-					
-					<h4>Annotations</h4>
-					<div th:each="ann : ${annotations}">
-						<b> <span th:text="${ann.author}"> user </span> </b> <br>
-						<i>Posted: </i><span th:text="${ann.notes}"> sometext </span> <br>
-						<i>Validity: </i><span th:text="${ann.validity}"> Real/False </span> 
-						<i>Trust: </i><span th:text="${ann.trust}"> Low/Medium/High </span> <br>
-						<i><small>Date: <span th:text="${ann.date}"> date </span> </small></i><br>
-						<br>
-					</div>
 			</div>
 		</div>
 		
-		<div th:if="${#strings.toString(session.campaign.state) == 'Created'}" >
+		<div th:if="${#strings.toString(session.campaign.state) != 'Created' and image != null}" class="row">
+			<ul class="list-unstyled jnk-col">
+				<li><h4><span th:text="${image.name}">1</span>° image details: </h4></li>
+				<li><i>Resolution(High, Medium, Low): </i><span th:text="${image.name}">default</span> </li>
+				<li><i>Latitude: </i><span th:text="${image.latitude}">default</span> </li>
+				<li><i>Longitude: </i><span th:text="${image.longitude}">default</span> </li>
+				<li><i>City: </i><span th:text="${image.city}">default</span> </li>
+				<li><i>Region: </i><span th:text="${image.region}">default</span> </li>
+				<li><i>Source: </i><span th:text="${image.source}">default</span> </li>
+			</ul>
+		</div>	
+		<h4>Annotations</h4>
+		<div class="row" th:each="ann : ${annotations}">
+			<ul class="list-unstyled jnk-col">
+				<li><b> <span th:text="${ann.author}"> user </span> </b> 
+				<li><i>Posted: </i><span th:text="${ann.notes}"> sometext </span> 
+				<li><i>Validity: </i><span th:text="${ann.validity}"> Real/False </span> 
+				<li><i>Trust: </i><span th:text="${ann.trust}"> Low/Medium/High </span> 
+				<li><i><small class="text-muted">Date: <span th:text="${ann.date}"> date </span> </small></i>
+			</ul>
+		</div>
+		</div>
+		
+		<div th:if="${#strings.toString(session.campaign.state) == 'Created'}">
 			<h4>Add more images here: </h4>
-			<form action="AddImage" method="POST" enctype="multipart/form-data">
+			<form action="AddImage" method="POST" enctype="multipart/form-data" class="form-group jnk-col">
 				<input type="file" id="image" name="image" accept="image/jpeg" required> <br>
 				Resolution(High, Medium, Low): <input type="text" name="resolution"> <br>
 				Latitude: <input type="text" name="latitude"> <br>

@@ -78,9 +78,12 @@ public class UserDAO {
 
 	public User editUser(String usr, String username, String name, String mailAddress, String password, String role, Level level) throws SQLException {
 
+		ImageDAO img = new ImageDAO();
 		String query = "UPDATE jnk.jnk_users SET username = ?, mail_address = ?, name = ?, password = ? WHERE username = ?;";
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 
+			if(!usr.equals(username)) img.editUserImage(usr, username);
+			
 			pstatement.setString(1, username);
 			pstatement.setString(2, mailAddress);
 			pstatement.setString(3, name);

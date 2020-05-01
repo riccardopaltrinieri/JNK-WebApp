@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="ISO-8859-1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link href="../css/mystyle.css" rel="stylesheet">
   <link href="css/mystyle.css" rel="stylesheet">
-  <title>JNK: Login</title>
+  <title>JNK Login</title>
 </head>
-<body>
+<body class="text-center">
 	<div class="topnav">
 		<a th:href="@{/Home}" class="active">Home</a>
+ 		<span class="nav-item"><b>J</b>u<b>NK</b>yard Crowdsourcing</span>>
 	 	<span th:switch="${session.user}" class="nav-right">
-			<a th:case="null" th:href="@{/LogIn}"> Log In</a>
-			<span th:case="*">
-				<a th:href="@{/EditProfile}" class="nav-right">Account</a>
-				<a th:href="@{/LogOut}">Log Out </a>
-			</span>
+			<a th:href="@{/LogIn}"> Log In</a>
 		</span>
 	</div>
 	<div>
-		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
+		<img src="../images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
 	</div>
 	
-	<h1>Please Log in to start working on this project</h1>
-	<form action="Login" method ="POST">
+	<form action="Login" method ="POST" class="form-signin">
 	
-	<div th:if="${session.notvalid == true}" class="not-valid">
-		<p> "Username or password incorrect" </p>
-	</div>
-	username: <input type="text" name="username"> <br>
-	password: <input type = "password" name="password"><br>
-	<input type="submit" value="Login">
+		<div th:if="${notvalid == 'true'}" class="alert-warning mt-3">
+			<p> "Username or password incorrect" </p>
+		</div>
+	    	<label class="col-form-label">Username: </label>
+        	<input type= "text" name="username" class="form-control" required>
+	    	<label class="col-form-label">Password: </label>
+      		<input type= "password" name="password" class="form-control" required>
+		<input type="submit" class="btn btn-block btn-secondary my-3" value="Log In">
+		
+		<h5 class="mt-5"> You want to <a th:href="@{/SignUp}" class="btn btn-sm btn-outline-secondary">Sign Up</a> instead? </h5>
+		
 	</form>
 	
-	<p> You want to <a th:href="@{/SignUp}">Sign Up</a> instead?</p>
 
 </body>
 </html>

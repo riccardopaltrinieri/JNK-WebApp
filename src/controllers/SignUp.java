@@ -76,12 +76,11 @@ public class SignUp extends HttpServlet {
 			usr.createNewUser(username, name, mailAddress, password, role);
 
 			String path = getServletContext().getContextPath() + "/Logout";
-			request.getSession().setAttribute("notvalid", false);
 			response.sendRedirect(path);
 			
 		} catch (SQLException e) {
 			System.out.println(e);
-			request.getSession().setAttribute("notvalid", true);
+			request.setAttribute("notvalid", "true");
 			doGet(request,response);
 		}
 	}

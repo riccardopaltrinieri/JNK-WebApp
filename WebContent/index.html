@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="ISO-8859-1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
   <link href="css/mystyle.css" rel="stylesheet">
   <title>JNK HomePage</title>
 </head>
 <body>
 	<div class="topnav">
 		<a th:href="@{/Home}" class="active">Home</a>
+ 		<span class="nav-item"><b>J</b>u<b>NK</b>yard Crowdsourcing</span>>
 	 	<span th:switch="${session.user}" class="nav-right">
 			<a th:case="null" th:href="@{/LogIn}"> Log In</a>
 			<span th:case="*">
@@ -18,113 +21,116 @@
 	</div>
 	<div>
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
- 		<h1 align="center">Illegal <b>J</b>u<b>NK</b>yard Crowdsourcing</h1>
 	</div>
 	
 	<!-- **************************************** MANAGER VIEW ************************************************* -->
 	
 	
-	<div th:if="${session.user.role=='manager'}">
+	<div th:if="${session.user.role=='manager'}" class="container-fluid">
 		
-		<h3> Hi <b><span th:text="${session.user.name}">Riccardo </span></b>, these are your campaigns: </h3>
-		<h4> Click on one of them to see the details </h4>
-		<div id="CampaignView">
-			
-				<table border="1">
-					<thead>
-						<tr>
-							<th>Campaign Name</th>
-							<th>Num of Images</th>
-							<th>Campaign State</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="c : ${campaigns}">
-							<td>
-								<a href="ManagerCampaign.html" th:href="@{/ManageCampaign(campaign=${c.name})}" th:text="${c.name}"> default </a>
-							</td>
-							<td th:text="${c.numImages}"> -1 </td>
-							<td th:text="${c.state}">closed</td>
-						</tr>
-					</tbody>
-				</table>
-		</div>
-		<h4> Or create a new one </h4>
-		<div id="CampaignForm">
-			<form action="CreateCampaign" method ="POST">
-				<div th:if="${notValid == 'true'}" class="not-valid">
-					<p> "This Campaign already exists, please use another name. " </p>
-				</div>
-				Name:  <input type= "text" name="name" pattern="[a-zA-Z0-9-_\.]{1,20}$" title="only letters, numbers '_'(underscore) and '.'(dot) are accepted" required> <br>
-				Customer:  <input type= "text" name="customer" required> <br>
-				<input type="submit" value="CreateCampaign">
-			</form>
-		</div>
+		<h3> Hi <b><span th:text="${session.user.name}">Riccardo</span></b>, these are your campaigns: </h3>
+		
+		<table class="table table-bordered table-hover mt-3">
+			<thead>
+				<tr class="text-center">
+					<th scope="col">Campaign Name</th>
+					<th scope="col">Num of Images</th>
+					<th scope="col">Campaign State</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="c : ${campaigns}" class="text-center">
+					<td class="text-center">
+						<a href="ManagerCampaign.html" th:href="@{/ManageCampaign(campaign=${c.name})}" th:text="${c.name}"> default </a>
+					</td>
+					<td class="text-center" th:text="${c.numImages}"> -1 </td>
+					<td class="text-center" th:text="${c.state}">closed</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<form action="CreateCampaign" method ="POST" class="form-group jnk-col">
+			<h4>Create a new one: </h4>
+			<div th:if="${notValid == 'true'}" class="alert-warning">
+				<small>"This Campaign already exists, please use another name. "</small>
+			</div>
+			<div class="form-group">
+		    <label class="col-sm-2 col-form-label">Name: </label>
+		    <div class="col-sm-10">
+		        <input type= "text" name="name" class="form-control" pattern="[a-zA-Z0-9-_\.]{1,20}$" required>
+			    <small class="form-text text-muted">
+			        The name must be 2-20 characters long and can contain letters, numbers, _ (underscore) and . (dots)
+			    </small>
+		      </div>
+		    </div>
+		    <div class="form-group">
+		    	<label class="col-sm-2 col-form-label">Customer: </label>
+		    	<div class="col-sm-10">
+		      		<input type= "text" name="customer" class="form-control" required>
+		      		 <small class="form-text text-muted">
+			        	Who requested this campaign
+			    	</small>
+		    	</div>
+		  	</div>
+			<input type="submit" class="btn btn-secondary ml-3" value="CreateCampaign">
+		</form>
 	</div>
 	
 	<!-- **************************************** /MANAGER VIEW ************************************************* -->
 	
 	<!--*****************************************  WORKER VIEW  ************************************************* -->
 	
-	<div th:if="${session.user.role=='worker'}" id="wrapper">
-	
-		<div id="first">
-			<h3> Hi <b><span th:text="${session.user.name}">Riccardo </span></b>, these are the campaigns you can work with: </h3>
-			<h4> Click on one of them to see the details </h4>
-			
-			<table border="1">
-				<thead>
-					<tr>
-						<th>Campaign Name</th>
-						<th>Campaign Customer</th>
-						<th>Num of Images</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="c : ${campaigns}">
-						<td>
-							<a href="" th:href="@{/WorkerCampaign(campaign=${c.name})}" th:text="${c.name}"> default </a>
-						</td>
-						<td th:text="${c.customer}"> default </td>
-						<td th:text="${c.numImages}"> -1 </td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+	<div th:if="${session.user.role=='worker'}" id="wrapper" class="container-fluid">
+		<div class="row">
 		
-		<div id="second">
-			<h3>..and these are the campaigns you already worked with: </h3>
-			<h4> Click on one of them to see the details </h4>
+			<div class="col-sm jnk-col">
+				<h3 class="text-center"> Hi <b><span th:text="${session.user.name}">Riccardo</span></b>, these are the campaigns you can work with: </h3>
+				
+				<table class="table table-bordered table-hover mt-5">
+					<thead>
+						<tr class="text-center">
+							<th>Campaign Name</th>
+							<th>Campaign Customer</th>
+							<th>Num of Images</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="c : ${campaigns}" class="text-center">
+							<td>
+								<a href="" th:href="@{/WorkerCampaign(campaign=${c.name})}" th:text="${c.name}"> default </a>
+							</td>
+							<td th:text="${c.customer}"> default </td>
+							<td th:text="${c.numImages}"> -1 </td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 			
-			<table border="1">
-				<thead>
-					<tr>
-						<th>Campaign Name</th>
-						<th>Campaign Customer</th>
-						<th>Num of Images</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="c : ${annCampaigns}">
-						<td>
-							<a href="" th:href="@{/WorkerCampaign(campaign=${c.name})}" th:text="${c.name}"> default </a>
-						</td>
-						<td th:text="${c.customer}"> default </td>
-						<td th:text="${c.numImages}"> -1 </td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="col-sm jnk-col">
+				<h3 class="text-center">..and these are the campaigns you already worked with: </h3>
+				
+				<table class="table table-bordered table-hover mt-5">
+					<thead>
+						<tr class="text-center">
+							<th>Campaign Name</th>
+							<th>Campaign Customer</th>
+							<th>Num of Images</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="c : ${annCampaigns}" class="text-center">
+							<td>
+								<a href="" th:href="@{/WorkerCampaign(campaign=${c.name})}" th:text="${c.name}"> default </a>
+							</td>
+							<td th:text="${c.customer}"> default </td>
+							<td th:text="${c.numImages}"> -1 </td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
-	
-	
-	
-	
-	
-	
-	
-	
 	</div>
 	
-	<!--*****************************************  WORKER VIEW  ************************************************* -->
+	<!--*****************************************  /WORKER VIEW  ************************************************* -->
 </body>
 </html>

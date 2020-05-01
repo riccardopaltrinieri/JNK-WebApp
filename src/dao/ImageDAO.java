@@ -129,4 +129,17 @@ public class ImageDAO {
 		return new File(dbLocation, pathImage);
 	}
 
+
+	public void editUserImage(String usr, String username) {
+		File oldImage = new File(dbLocation + profilePicturesDir + usr + ".jpg");
+		File newImage = new File(dbLocation + profilePicturesDir + username + ".jpg");
+		
+		try {
+		    Files.copy(oldImage.toPath(), newImage.toPath());
+		    oldImage.delete();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

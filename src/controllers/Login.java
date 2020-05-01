@@ -78,16 +78,15 @@ public class Login extends HttpServlet {
 			user = usr.checkCredentials(usrn, pwd);
 			if (user != null) {
 				String path = getServletContext().getContextPath() + "/Home";
-				request.getSession().setAttribute("notvalid", false);
 				request.getSession().setAttribute("user",user);
 				response.sendRedirect(path);
 			} else {
-				request.getSession().setAttribute("notvalid", true);
+				request.setAttribute("notvalid", "true");
 				doGet(request,response);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			request.getSession().setAttribute("notvalid", true);
+			request.setAttribute("notvalid", "true");
 			doGet(request,response);
 		}
 		
