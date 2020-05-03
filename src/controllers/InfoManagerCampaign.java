@@ -27,7 +27,11 @@ import dao.AnnotationDAO;
 import dao.CampaignDAO;
 import dao.ImageDAO;
 
-
+/**
+ * Servlet implementation class InfoManagerCampaign
+ * This is used to show to a manager all the campaigns he created 
+ * and to create new ones
+ */
 @WebServlet({"/ManageCampaign", "/CreateCampaign"})
 public class InfoManagerCampaign extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -71,6 +75,8 @@ public class InfoManagerCampaign extends HttpServlet {
 		ImageDAO img = new ImageDAO();
 		List<Image> images = new ArrayList<>();
 		
+		// If the user is on the homepage and choose to see a specific campaign
+		// get it from the database and save it in a var and in the session
 		if(campaignName != null) {
 			try {
 				campaign = cmp.getCampaign(campaignName);
@@ -80,6 +86,8 @@ public class InfoManagerCampaign extends HttpServlet {
 			}
 		}
 		
+		// Pass all the images with their infos and annotations to the page 
+		// in order to show them in modals with bootstrap/javascript/thymeleaf
 		try {
 			Image image;
 			for (int i = 1; i <= campaign.getNumImages(); i++) {
@@ -108,13 +116,17 @@ public class InfoManagerCampaign extends HttpServlet {
 		String customer = (String) request.getParameter("customer");
 		User user = (User) request.getSession().getAttribute("user");
 		
+		// The user create a new campaign
 		try {
 			cmp.createNewCampaign(user, name, customer);
 		} catch (SQLException e) {
+			// When the name is already used an error message is shown on the page
 			System.out.println(e);
 			request.setAttribute("notValid", "true");
 		}
 		
+		// Redirect to the home where the user can select the campaign
+		// and get its ID from the database
 		response.sendRedirect(request.getContextPath()+"/Home");
 	}
 

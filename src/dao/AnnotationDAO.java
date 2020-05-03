@@ -13,16 +13,34 @@ import beans.Campaign;
 import beans.Image;
 import beans.User;
 
+/**
+ * An Object that can be used by the user to extract all the info about 
+ * {@link Annotation} from a database. It uses the connection passed in the 
+ * constructor.
+ *
+ */
 public class AnnotationDAO {
 
 	private Connection connection;
 	
-	
+	/**
+	 * Construct the DAO connecting it to the database saving the parameter connection.
+	 * @param connection to a specific database
+	 */
 	public AnnotationDAO(Connection connection) {
 		this.connection = connection;
 	}
 
 
+	/**
+	 * Insert an annotation in the database table using the data 
+	 * in the first parameter and using the Id of other parameters as external keys
+	 * @param annotation containing the author, text, validity and trust of the note
+	 * @param user who created the note
+	 * @param campaign where the image is
+	 * @param imageName where the annotation is
+	 * @throws SQLException
+	 */
 	public void addAnnotation(Annotation annotation, User user, Campaign campaign, int imageName) throws SQLException {
 		
 		String query = "INSERT INTO jnk.jnk_annotations(validity, text, trust, id_user, id_camp, id_image)"
@@ -44,6 +62,12 @@ public class AnnotationDAO {
 		
 	}
 
+	/**
+	 * Gets all the annotations from the database (with the relative info) 
+	 * and save them in the returned list.
+	 * @param image you want to get annotation from
+	 * @throws SQLException
+	 */
 	public List<Annotation> getAnnotationsManager(Image image) throws SQLException {
 		List<Annotation> annotations = new ArrayList<>();
 		
@@ -72,7 +96,12 @@ public class AnnotationDAO {
 		}
 	}
 
-
+	/**
+	 * If a worker has already annotated an image, returns that annotation.
+	 * @param image already annotated by the user
+	 * @param user who want to see the note
+	 * @throws SQLException
+	 */
 	public Annotation getAnnotationWorker(Image image, User user) throws SQLException {
 		
 		Annotation annotation = null;

@@ -26,6 +26,8 @@ import dao.UserDAO;
 
 /**
  * Servlet implementation class EditProfile
+ * Shows the account setting page to the user and with POST method it
+ * can modify user data
  */
 @WebServlet("/EditProfile")
 @MultipartConfig
@@ -53,6 +55,7 @@ public class EditProfile extends HttpServlet {
 			throw new UnavailableException("Couldn't connect");
 		}
 		
+		// Thymeleaf initialization
 		ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -75,6 +78,7 @@ public class EditProfile extends HttpServlet {
 		ImageDAO img = new ImageDAO();
 		User user = (User) request.getSession().getAttribute("user");
 
+		// Get the user info
 		String username = request.getParameter("username");
 		String name = request.getParameter("name");
 		String mailAddress = request.getParameter("mailAddress");
@@ -82,20 +86,27 @@ public class EditProfile extends HttpServlet {
 		Part image = request.getPart("avatar");
 		
 		try {
+			
+			// The user can modify just one thing per form so the method can use old values
 			if(username.isEmpty()) username = user.getUsername();
 			if(name.isEmpty()) name = user.getName();
 			if(mailAddress.isEmpty()) mailAddress = user.getMailAddress();
 			if(password.isEmpty()) password = user.getPassword();
 			
+			// The user info are stored in the sql database
 			user = usr.editUser(user, username, name, mailAddress, password);
 			
 			if(image != null && image.getSize() != 0) {
+				// And if present the new profile picture is stored in the File System database
 				img.addUserImage(user, image);
 			}
 			
 			request.getSession().setAttribute("user",user);
 			
 		} catch (SQLException e) {
+			// When the username or the email address has already been used 
+			// an error message is showed on the page
+			request.setAttribute("notValid", "true");
 			System.out.println(e);
 		}
 		

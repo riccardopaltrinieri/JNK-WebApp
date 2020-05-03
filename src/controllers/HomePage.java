@@ -24,6 +24,9 @@ import dao.CampaignDAO;
 
 /**
  * Servlet implementation class HomePage
+ * Main servlet for the web-app, it show the homepage and 
+ * it should be accessed only when logged in to recognise
+ * the user role
  */
 @WebServlet("/Home")
 public class HomePage extends HttpServlet {
@@ -51,7 +54,7 @@ public class HomePage extends HttpServlet {
 			throw new UnavailableException("Couldn't connect");
 		}
 		
-		
+		// Thymeleaf initialization
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
 		this.templateEngine = new TemplateEngine();
@@ -74,6 +77,8 @@ public class HomePage extends HttpServlet {
 			}
 		} else {
 			try {
+				// the campaigns are split in the opted ones and 
+				// the ones which are not opted
 				campaigns = cmp.getUserCampaigns(user, false);
 				List<Campaign> annotatedCampaigns = cmp.getUserCampaigns(user, true);
 				request.setAttribute("campaigns", campaigns);

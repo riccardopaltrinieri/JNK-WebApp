@@ -2,9 +2,9 @@ package controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -20,7 +20,10 @@ import beans.Image;
 import dao.CampaignDAO;
 import dao.ImageDAO;
 
-
+/**
+ * Servlet implementation class ManagerEditCampaign
+ * Used to modify the state of a campaign or to add new images to it
+ */
 @WebServlet({"/AddImage", "/UpdateCampaign" })
 @MultipartConfig
 public class ManagerEditCampaign extends HttpServlet {
@@ -49,18 +52,19 @@ public class ManagerEditCampaign extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String action = (String) request.getParameter("action");
+		String action = request.getParameter("action");
 		CampaignDAO cmp = new CampaignDAO(connection);
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
 		
+		// A form with GET method is used to modify the state of the campaign
 		if(action != null) {
 			try {
-				campaign = cmp.updateCampaign(campaign, action);
+				cmp.updateCampaign(campaign, action);
 				request.getSession().setAttribute("campaign", campaign);
 				} catch (SQLException e) {
 				System.out.println(e);
 			}
-		} 
+		}
 		String path = "/ManageCampaign";
 		response.sendRedirect(request.getContextPath() + path);
 	}
@@ -71,23 +75,30 @@ public class ManagerEditCampaign extends HttpServlet {
 		CampaignDAO cmp = new CampaignDAO(connection);
 		ImageDAO img = new ImageDAO();
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
-		Image newImage = new Image(0, "");
 		
-		newImage.setLatitude(request.getParameter("latitude"));
-		newImage.setLongitude(request.getParameter("longitude"));
-		newImage.setResolution(request.getParameter("resolution"));
-		newImage.setRegion(request.getParameter("region"));
-		newImage.setSource(request.getParameter("source"));
-		newImage.setCity(request.getParameter("city"));
+		// a temporary image object is created to contain all the info
+		Image tempImage = new Image(0);
+		tempImage.setLatitude(request.getParameter("latitude"));
+		tempImage.setLongitude(request.getParameter("longitude"));
+		tempImage.setResolution(request.getParameter("resolution"));
+		tempImage.setRegion(request.getParameter("region"));
+		tempImage.setSource(request.getParameter("source"));
+		tempImage.setCity(request.getParameter("city"));
+		tempImage.setDate(Date.valueOf(request.getParameter("date"))); //TODO fix date input
 		
 		Part image = request.getPart("image");
-		if(image != null ) {
+		if(image != null && image.getSize() != 0) {
+			//the real file is stored in the File System (or the database used for images)
 			img.addCampaignImage(campaign, image);
 			try {
-				cmp.newImage(campaign, newImage);
+				// while the info are written in the sql database
+				cmp.newImage(campaign, tempImage);
 			} catch (SQLException e) {
 				System.out.println(e);
 			}
+		} else {
+			// When the image file is corrupted an error message is shown on the page
+			request.setAttribute("notValid", "true");
 		}
 		doGet(request,response);
 	}

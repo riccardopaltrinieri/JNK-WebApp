@@ -20,6 +20,7 @@ import dao.UserDAO;
 
 /**
  * Servlet implementation class SignIn
+ * Used to create new users in the database
  */
 @WebServlet("/SignUp")
 public class SignUp extends HttpServlet {
@@ -73,12 +74,15 @@ public class SignUp extends HttpServlet {
 		String role = request.getParameter("role");
 		
 		try {
+			// The new user is stored in the database and all the info saved
 			usr.createNewUser(username, name, mailAddress, password, role);
 
 			String path = getServletContext().getContextPath() + "/Logout";
 			response.sendRedirect(path);
 			
 		} catch (SQLException e) {
+			// If the username or the email address has already been used 
+			// an error message is shown on the page
 			System.out.println(e);
 			request.setAttribute("notvalid", "true");
 			doGet(request,response);

@@ -1,6 +1,6 @@
 package beans;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import enumerations.Level;
@@ -11,7 +11,6 @@ public class Image {
 	private int name;
 	private String latitude;
 	private String longitude;
-	private String path;
 	private String city;
 	private String region;
 	private String source;
@@ -20,27 +19,23 @@ public class Image {
 	private boolean annotated;
 	private List<Annotation> annotations;
 	
+	
+	public Image(int name) {
+		this.setName(name);
+	}
+	
 	public boolean isAnnotated() {
 		return annotated;
 	}
-
 	public void setAnnotated(boolean annotated) {
 		this.annotated = annotated;
 	}
-
-	public Image(int num, String path) {
-		this.name = num;
-		this.path = path;
-	}
-
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 	public String getLatitude() {
 		return latitude;
 	}
@@ -83,24 +78,16 @@ public class Image {
 	public void setResolution(String resolution) {
 		this.resolution = Level.valueOf(resolution);
 	}
-	public String getPath() {
-		return path;
+	public List<Annotation> getAnnotations() {
+		return annotations;
 	}
-	public void setPath(String path) {
-		this.path = path;
+	public void setAnnotations(List<Annotation> annotations) {
+		this.annotations = annotations;
 	}
 	public int getName() {
 		return name;
 	}
 	public void setName(int name) {
 		this.name = name;
-	}
-
-	public List<Annotation> getAnnotations() {
-		return annotations;
-	}
-
-	public void setAnnotations(List<Annotation> annotations) {
-		this.annotations = annotations;
 	}
 }

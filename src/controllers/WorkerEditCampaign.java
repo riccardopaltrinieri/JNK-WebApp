@@ -21,6 +21,8 @@ import enumerations.Validity;
 
 /**
  * Servlet implementation class UserEditCampaign
+ * Used from a worker to add annotations on a campaign image or to see
+ * the annotations he already posted
  */
 @WebServlet("/AddAnnotation")
 public class WorkerEditCampaign extends HttpServlet {
@@ -68,6 +70,7 @@ public class WorkerEditCampaign extends HttpServlet {
 		Annotation annotation = new Annotation(user.getUsername(), validity, trust, notes);
 		
 		try {
+			// Add the annotation to the database
 			ant.addAnnotation(annotation, user, campaign, imageName);
 			//update the level of experience after any annotation
 			user.setLvlExp(usr.getUserExperience(user.getId()));

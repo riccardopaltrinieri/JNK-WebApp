@@ -30,6 +30,8 @@ import dao.ImageDAO;
 
 /**
  * Servlet implementation class InfoWorkerCampaign
+ * This is used to show to a worker all the campaign he can work 
+ * with and the ones where he already write at least one annotation
  */
 @WebServlet("/WorkerCampaign")
 public class InfoWorkerCampaign extends HttpServlet {
@@ -43,7 +45,7 @@ public class InfoWorkerCampaign extends HttpServlet {
 		
 		ServletContext context = getServletContext();
 
-		//MySQL database connection initialization
+		// MySQL database connection initialization
 		try {
 			String driver = context.getInitParameter("dbDriver");
 			String url = context.getInitParameter("dbUrl");
@@ -57,7 +59,7 @@ public class InfoWorkerCampaign extends HttpServlet {
 			throw new UnavailableException("Couldn't connect");
 		}
 		
-		
+		// Thymeleaf initialization
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
 		this.templateEngine = new TemplateEngine();
@@ -74,7 +76,8 @@ public class InfoWorkerCampaign extends HttpServlet {
 		CampaignDAO cmp = new CampaignDAO(connection);
 		ImageDAO img = new ImageDAO();
 		List<Image> images = new ArrayList<>();
-		
+
+		// If the user is on the homepage and choose to see a specific campaign
 		if(campaignName != null) {
 			try {
 				campaign = cmp.getCampaign(campaignName);
@@ -84,6 +87,8 @@ public class InfoWorkerCampaign extends HttpServlet {
 			}
 		}
 
+		// Pass all the images with their infos and user annotation (if present) to the page 
+		// in order to show them in modals with bootstrap/javascript/thymeleaf
 		try {
 			Image image;
 			Annotation annotation;
@@ -100,9 +105,11 @@ public class InfoWorkerCampaign extends HttpServlet {
 				}
 				images.add(image);
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		request.setAttribute("images", images);
 		
 		String path = "/WEB-INF/WorkerCampaign.html";

@@ -24,6 +24,7 @@ import dao.CampaignDAO;
 
 /**
  * Servlet implementation class Statistics
+ * Used to question the database with queries
  */
 @WebServlet("/Statistics")
 public class Statistics extends HttpServlet {
@@ -64,6 +65,7 @@ public class Statistics extends HttpServlet {
 		CampaignDAO cmp = new CampaignDAO(connection);
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
 		try {
+			// Get the info from the database
 			CampaignStats stats = cmp.getStats(campaign);
 			request.getSession().setAttribute("stats", stats);
 		} catch (SQLException e) {

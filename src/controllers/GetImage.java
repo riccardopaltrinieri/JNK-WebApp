@@ -16,6 +16,8 @@ import dao.ImageDAO;
 
 /**
  * Servlet implementation class SendImage
+ * Used for showing images in other pages, 
+ * should be used only with <img src="/GetImage?image=*" alt=""> tag
  */
 @WebServlet("/GetImage")
 public class GetImage extends HttpServlet {
@@ -41,6 +43,7 @@ public class GetImage extends HttpServlet {
             response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
             throw new NoSuchElementException();
         }
+        
         // Init servlet response.
         response.reset();
         response.setContentType("image/jpeg");

@@ -23,6 +23,8 @@ import dao.UserDAO;
 
 /**
  * Servlet implementation class LogIn
+ * Used to get user info from database if the credentials
+ * are right
  */
 @WebServlet({"/LogIn", "/Login"})
 public class Login extends HttpServlet {
@@ -49,7 +51,7 @@ public class Login extends HttpServlet {
 			throw new UnavailableException("Couldn't connect");
 		}
 		
-		//Thymeleaf code initialization
+		//Thymeleaf initialization
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
 		this.templateEngine = new TemplateEngine();
@@ -77,10 +79,14 @@ public class Login extends HttpServlet {
 		try {
 			user = usr.checkCredentials(usrn, pwd);
 			if (user != null) {
+				
+				// If the credentials were right the user is redirect to the Home
 				String path = getServletContext().getContextPath() + "/Home";
 				request.getSession().setAttribute("user",user);
 				response.sendRedirect(path);
 			} else {
+				
+				// else an error message is shown on the page
 				request.setAttribute("notvalid", "true");
 				doGet(request,response);
 			}
