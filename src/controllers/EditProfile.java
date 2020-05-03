@@ -87,9 +87,9 @@ public class EditProfile extends HttpServlet {
 			if(mailAddress.isEmpty()) mailAddress = user.getMailAddress();
 			if(password.isEmpty()) password = user.getPassword();
 			
-			user = usr.editUser(user.getUsername(), username, name, mailAddress, password, user.getRole(), user.getLvlExp());
+			user = usr.editUser(user, username, name, mailAddress, password);
 			
-			if(image.getSize() != 0) {
+			if(image != null && image.getSize() != 0) {
 				img.addUserImage(user, image);
 			}
 			

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -17,8 +20,12 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import beans.Campaign;
+import beans.Image;
 import beans.User;
+import dao.AnnotationDAO;
 import dao.CampaignDAO;
+import dao.ImageDAO;
 
 
 @WebServlet({"/ManageCampaign", "/CreateCampaign"})
@@ -58,16 +65,33 @@ public class InfoManagerCampaign extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String campaignName = request.getParameter("campaign");
+		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
 		CampaignDAO cmp = new CampaignDAO(connection);
-		//ImageDAO img = new ImageDAO();
+		AnnotationDAO ant = new AnnotationDAO(connection);
+		ImageDAO img = new ImageDAO();
+		List<Image> images = new ArrayList<>();
 		
 		if(campaignName != null) {
 			try {
-				request.getSession().setAttribute("campaign", cmp.getCampaign(campaignName));
+				campaign = cmp.getCampaign(campaignName);
+				request.getSession().setAttribute("campaign", campaign);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
+		
+		try {
+			Image image;
+			for (int i = 1; i <= campaign.getNumImages(); i++) {
+				image = img.getImageInfo(campaign, String.valueOf(i), connection);
+				image.setAnnotations(ant.getAnnotationsManager(image));
+				images.add(image);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		request.setAttribute("images", images);
 		
 		String path = "/WEB-INF/ManagerCampaign.html";
 		ServletContext servletContext = getServletContext();

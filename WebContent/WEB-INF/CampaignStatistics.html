@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="ISO-8859-1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link href="../css/mystyle.css" rel="stylesheet">
   <link href="css/mystyle.css" rel="stylesheet">
   <title>JNK: Stats</title>
 </head>
 <body>
+	<!-- *********************** HEADER *************************** -->
 	<div class="topnav">
 		<a th:href="@{/Home}" class="active">Home</a>
 		<span class="nav-right"><a th:href="@{/SignIn}" class="nav-right">Account</a></span>
@@ -17,16 +21,24 @@
 	<div>
 		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
 	</div>
+	<!-- ********************* /HEADER ************************* -->
 	
-	Go back to <a href="ManagerCampaign.html" th:href="@{/ManageCampaign(campaign=${session.campaign.name})}" th:text="${session.campaign.name}"> default </a>
+	<a href="ManagerCampaign.html" th:href="@{/ManageCampaign(campaign=${session.campaign.name})}" th:text="${session.campaign.name}"> 
+		<button class="btn btn-light ml-3"> Back </button>
+	</a>
 	
-	<div>
-		<h1> Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
-		<br>
-		<i>Images number: </i><span th:text="${session.stats.numImages}"> 0 </span> <br>
-		<i>Annotations number: </i><span th:text="${session.stats.annotations}"> 0</span> <br>
-		<i>Average annotations per image: </i><span th:text="${session.stats.average}"> 0</span> <br>
-		<i>Images with conflicts: </i><span th:text="${session.stats.conflicts}"> 0</span> <br>
+	<div class="container-fluid">
+		
+		<div>
+			<ul class="list-unstyled">
+				<li><h1> Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
+				<li><br>
+				<li><i>Images number: </i><span th:text="${session.stats.numImages}"> 0 </span>
+				<li><i>Annotations number: </i><span th:text="${session.stats.annotations}"> 0</span>
+				<li><i>Average annotations per image: </i><span th:text="${session.stats.average}"> 0</span>
+				<li><i>Images with conflicts: </i><span th:text="${session.stats.conflicts}"> 0</span>
+			</ul>
+		</div>
 	</div>
 </body>
 </html>

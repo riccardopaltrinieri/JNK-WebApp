@@ -130,15 +130,16 @@ public class ImageDAO {
 	}
 
 
-	public void editUserImage(String usr, String username) {
-		File oldImage = new File(dbLocation + profilePicturesDir + usr + ".jpg");
-		File newImage = new File(dbLocation + profilePicturesDir + username + ".jpg");
+	public void editUserImages(User oldUser, String newUsername) {
 		
-		try {
-		    Files.copy(oldImage.toPath(), newImage.toPath());
-		    oldImage.delete();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(oldUser.getRole().equals("worker")) {
+			File oldImage = new File(dbLocation + profilePicturesDir + oldUser.getUsername() + ".jpg");
+			File newImage = new File(dbLocation + profilePicturesDir + newUsername + ".jpg");
+		    oldImage.renameTo(newImage);
+		} else {
+			File oldCampaigns = new File(dbLocation + campaignPicturesDir + "\\" + oldUser.getUsername());
+			File newCampaigns = new File(dbLocation + campaignPicturesDir + "\\" + newUsername);
+			oldCampaigns.renameTo(newCampaigns);
 		}
 	}
 

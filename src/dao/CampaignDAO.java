@@ -60,7 +60,7 @@ public class CampaignDAO {
 	}
 
 	public Campaign getCampaign(String campaignName) throws SQLException {
-		String query = "SELECT c.id, c.name, u.name, customer, state, num_images FROM jnk.jnk_campaigns as c JOIN jnk.jnk_users as u ON c.id_owner = u.id WHERE c.name = ? ";
+		String query = "SELECT c.id, c.name, u.username, customer, state, num_images FROM jnk.jnk_campaigns as c JOIN jnk.jnk_users as u ON c.id_owner = u.id WHERE c.name = ? ";
 		
 		try (PreparedStatement pstatement = connection.prepareStatement(query); ) {
 
@@ -70,7 +70,7 @@ public class CampaignDAO {
 			try (ResultSet result = pstatement.executeQuery();) {
 				result.next();
 				String customer = result.getString("customer");
-				String owner = result.getString("u.name");
+				String owner = result.getString("u.username");
 				State state = State.valueOf(result.getString("state"));
 				int numImages = result.getInt("num_images");
 				Campaign campaign = new Campaign(campaignName, customer, owner, state, numImages);
@@ -193,4 +193,5 @@ public class CampaignDAO {
 		
 		return stats;
 	}
+
 }

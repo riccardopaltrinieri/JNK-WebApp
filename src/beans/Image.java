@@ -1,6 +1,7 @@
 package beans;
 
 import java.util.Date;
+import java.util.List;
 
 import enumerations.Level;
 
@@ -17,6 +18,7 @@ public class Image {
 	private Date date;
 	private Level resolution;
 	private boolean annotated;
+	private List<Annotation> annotations;
 	
 	public boolean isAnnotated() {
 		return annotated;
@@ -92,5 +94,13 @@ public class Image {
 	}
 	public void setName(int name) {
 		this.name = name;
+	}
+
+	public List<Annotation> getAnnotations() {
+		return annotations;
+	}
+
+	public void setAnnotations(List<Annotation> annotations) {
+		this.annotations = annotations;
 	}
 }

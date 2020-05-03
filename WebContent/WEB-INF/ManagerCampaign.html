@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
   <link href="../css/mystyle.css" rel="stylesheet">
   <link href="css/mystyle.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <title>JNK: Campaign View</title>
 </head>
 <body>
@@ -25,14 +27,17 @@
 	
 	<div class="container-fluid">
 	
-		<div class="row">
-			<ul class="list-unstyled col-4">
-				<li><h1 class="col">Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
+		<div class="row"><div class="col text-center">
+			<h1>Campaign <b><span th:text="${session.campaign.name}"> Default</span></b>: </h1>
+		</div></div>
+		<div class="row text-center">
+			<div class="col-3"></div>
+			<ul class="list-unstyled col-3 text-center">
 				<li>Customer: <span th:text="${session.campaign.customer}"> None</span>
 				<li>State: <span th:text="${#strings.toString(session.campaign.state)}"> None </span> 
 			</ul>
-			<div class="col-3 mt-2">
-				<form action="UpdateCampaign" method="GET">
+			<div class="col-1 mt-2 text-center">
+				<form th:action="UpdateCampaign" action="" method="GET">
 					<input type="submit" 
 						th:if="${#strings.toString(session.campaign.state) == 'Created' and session.campaign.numImages >= 1}" 
 						name="action" value="Start" class="btn btn-success">
@@ -41,59 +46,114 @@
 						name="action" value="Close" class="btn btn-danger">
 				</form>
 			</div>
-			<div class="col-2 mt-2">
+			<div class="col-2 mt-2 text-center">
 				<div th:if="${#strings.toString(session.campaign.state) != 'Created'}">
-					<a th:href="@{/Statistics}"> <button type="button" class="btn btn-info">Statistics</button></a>
+					<a th:href="@{/Statistics}" href="CampaignStatistics.html"> <button type="button" class="btn btn-info">Statistics</button></a>
 				</div>
 			</div>
+			<div class="col-3"></div>
+		</div>
+		
+		<div class="row" id="container-campaign-images" th:numImg="${session.campaign.numImages}" >
+			<div class="col"></div>
+			<div th:each="img : ${images}">
+				<div class="col-8" style="overflow-x: auto;">
+					<div class="row">
+						<img src="../images/default.jpg" th:src="@{/GetImage(image=${img.name})}" class="rounded img-thumbnail" alt="campaign+image">
+					</div>
+					<div class="row">
+						<div class="col"></div>
+    					<div class="col text-center">
+							<button th:if="${#strings.toString(session.campaign.state) != 'Created'}" 
+								id="dtlBtn" type="button" class="btn btn-secondary" data-toggle="modal" th:data-target="${'#' + img.name + 'modalImage'}" data-target="#modalImage">details</button> 
+						</div>
+						<div class="col"></div>
+					</div>
+				</div>
+				
+				<div class="modal fade" th:id="${img.name + 'modalImage'}" tabindex="-1" role="dialog" aria-labelledby="modalImageTitle" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered modal-jnk modal-dialog-scrollable" role="document">
+				    <div class="modal-content">
+				      	<div class="modal-header">
+				        	<h5 class="modal-title" id="modalImageTitle"><span th:text="${img.name}">1</span>° image: </h5>
+				       		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          		<span aria-hidden="true">&times;</span>
+				        	</button>
+				      	</div>
+				      	<div class="modal-body">
+				      		<div class="row">
+				      			<div class="col-8" style="position: fixed;">
+									<img src="../images/default.jpg" th:src="@{/GetImage(image=${img.name})}" class="rounded jnk-img" alt="campaign+image"> 
+				        		</div>
+				        		<div class="col-4" style="overflow-y: scroll; max-height: 600px;">
+									<ul class="list-unstyled">
+										<li><h4><span th:text="${img.name}">1</span>° image: </h4></li>
+										<li><i>Resolution(High, Medium, Low): </i><span th:text="${img.name}">default</span> </li>
+										<li><i>Latitude: </i><span th:text="${img.latitude}">default</span> </li>
+										<li><i>Longitude: </i><span th:text="${img.longitude}">default</span> </li>
+										<li><i>City: </i><span th:text="${img.city}">default</span> </li>
+										<li><i>Region: </i><span th:text="${img.region}">default</span> </li>
+										<li><i>Source: </i><span th:text="${img.source}">default</span> </li>
+									</ul>
+									
+									<h4>Annotations</h4>
+									<div class="row" th:each="ann : ${img.annotations}">
+										<ul class="list-unstyled">
+											<li><b> <span th:text="${ann.author}"> user </span> </b> 
+											<li><i>Posted: </i><span th:text="${ann.notes}"> sometext </span> 
+											<li><i>Validity: </i><span th:text="${ann.validity}"> Real/False </span> 
+											<li><i>Trust: </i><span th:text="${ann.trust}"> Low/Medium/High </span> 
+											<li><i><small class="text-muted">Date: <span th:text="${ann.date}"> date </span> </small></i>
+										</ul>
+									</div>
+				        		</div>
+			        		</div>
+				      	</div>
+				      		<div class="modal-footer">
+						        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close">Close</button>
+				      		</div>
+				    	</div>
+				    </div>
+				</div>
+			</div>
+			<div class="col"></div>
 		</div>
 		
 		<div class="row">
-			<div class="col-sm" th:each="img : ${#numbers.sequence( 1, session.campaign.numImages, 1)}">
-				<a th:if="${#strings.toString(session.campaign.state) != 'Created'}" th:href="@{/InfoImage(image=${img})}" > 
-					<img th:src="@{/GetImage(image=${img})}" th:class="cmp-img" alt="campaign+images"> 
-				</a>
-				<img th:unless="${#strings.toString(session.campaign.state) != 'Created'}" th:src="@{/GetImage(image=${img})}" th:class="cmp-img" alt="campaign+images"> 
+			<div class="col"></div>
+			<div th:if="${#strings.toString(session.campaign.state) == 'Created'}" class="col-8">
+				<h4>Add more images here: </h4>
+				<form action="AddImage" method="POST" enctype="multipart/form-data" class="form-group mt-3">
+					<input type="file" id="image" name="image" accept="image/jpeg" class="form-control" required> <br>
+					Resolution(High, Medium, Low): <input type="text" name="resolution" class="form-control">
+					Latitude: <input type="text" name="latitude" class="form-control">
+					Longitude: <input type="text" name="longitude" class="form-control">
+					City: <input type="text" name="city" class="form-control">
+					Region: <input type="text" name="region" class="form-control">
+					Source: <input type="text" name="source" class="form-control">
+					
+					<input class="mt-3" type="submit" value="Add">
+				</form>
 			</div>
-		</div>
-		
-		<div th:if="${#strings.toString(session.campaign.state) != 'Created' and image != null}" class="row">
-			<ul class="list-unstyled jnk-col">
-				<li><h4><span th:text="${image.name}">1</span>° image details: </h4></li>
-				<li><i>Resolution(High, Medium, Low): </i><span th:text="${image.name}">default</span> </li>
-				<li><i>Latitude: </i><span th:text="${image.latitude}">default</span> </li>
-				<li><i>Longitude: </i><span th:text="${image.longitude}">default</span> </li>
-				<li><i>City: </i><span th:text="${image.city}">default</span> </li>
-				<li><i>Region: </i><span th:text="${image.region}">default</span> </li>
-				<li><i>Source: </i><span th:text="${image.source}">default</span> </li>
-			</ul>
-		</div>	
-		<h4>Annotations</h4>
-		<div class="row" th:each="ann : ${annotations}">
-			<ul class="list-unstyled jnk-col">
-				<li><b> <span th:text="${ann.author}"> user </span> </b> 
-				<li><i>Posted: </i><span th:text="${ann.notes}"> sometext </span> 
-				<li><i>Validity: </i><span th:text="${ann.validity}"> Real/False </span> 
-				<li><i>Trust: </i><span th:text="${ann.trust}"> Low/Medium/High </span> 
-				<li><i><small class="text-muted">Date: <span th:text="${ann.date}"> date </span> </small></i>
-			</ul>
-		</div>
-		</div>
-		
-		<div th:if="${#strings.toString(session.campaign.state) == 'Created'}">
-			<h4>Add more images here: </h4>
-			<form action="AddImage" method="POST" enctype="multipart/form-data" class="form-group jnk-col">
-				<input type="file" id="image" name="image" accept="image/jpeg" required> <br>
-				Resolution(High, Medium, Low): <input type="text" name="resolution"> <br>
-				Latitude: <input type="text" name="latitude"> <br>
-				Longitude: <input type="text" name="longitude"> <br>
-				City: <input type="text" name="city"> <br>
-				Region: <input type="text" name="region"> <br>
-				Source: <input type="text" name="source"> <br>
-				
-				<input type="submit" value="Add">
-			</form>
+			<div class="col"></div>
 		</div>
 	</div>
+	
+	<script>
+	var numImages = content.getElementById("container-campaign-images").getAttribute("numImages");
+	if(numImages !== null) {
+		var img = 1;
+		for (img = 1; img <= numImages; img++){ 
+			$('#' + img + 'modalImage').on('shown.bs.modal', function () {
+				$('#myInput').trigger('focus')
+			})
+		}
+	}
+	else {
+		$('#modalImage').on('shown.bs.modal', function () {
+			$('#myInput').trigger('focus')
+		})
+	}
+	</script>
 </body>
 </html>

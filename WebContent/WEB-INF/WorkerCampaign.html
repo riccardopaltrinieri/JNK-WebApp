@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="ISO-8859-1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link href="../css/mystyle.css" rel="stylesheet">
   <link href="css/mystyle.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <title>JNK: Campaign View</title>
 </head>
 <body>
+	<!-- ******************************* HEADER ***************************** -->
 	<div class="topnav">
 		<a th:href="@{/Home}" class="active">Home</a>
 		<span class="nav-right"><a th:href="@{/EditProfile}" class="nav-right">Account</a></span>
@@ -15,57 +21,87 @@
 		</span>
 	</div>
 	<div>
-		<img src="images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
+		<img src="../images/nome+logo-removebg.png" th:src="@{/images/nome+logo-removebg.png}" class="logo" alt="Nome+Logo"/>
 	</div>
+	<!-- ******************************* /HEADER ******************************* -->
 	
-	<div>
-		<h1> Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
-		Customer: <span th:text="${session.campaign.customer}"> None</span> <br>
-		State: <span th:text="${session.campaign.state}"> None </span> 
+	<div class="container-fluid">
+	
+		<div class="row">
+			<h1>Campaign <b><span th:text="${session.campaign.name}"> Default</span></b>: </h1>
+		</div>
+		<div class="row">
+			<ul class="list-unstyled col-2">
+				<li>Customer: <span th:text="${session.campaign.customer}"> None</span>
+			</ul>
+		</div>
 		
-		<br> 
-		<div>
-			
-			<span th:each="img : ${#numbers.sequence( 1, session.campaign.numImages, 1)}">
-				<a th:if="${#strings.toString(session.campaign.state) != 'Created'}" th:href="@{/InfoImage(image=${img})}" > 
-					<img th:src="@{/GetImage(image=${img})}" th:class="cmp-img" alt="campaign+images"> 
-				</a>
-				<img th:unless="${#strings.toString(session.campaign.state) != 'Created'}" th:src="@{/GetImage(image=${img})}" th:class="cmp-img" alt="campaign+images"> 
-			</span>
-			<br>
-			
-			<div th:if="${image} != null">
-				<br>
-				<h4> Image  <span th:text="${image.name}">default</span> details </h4>
-				Resolution(High, Medium, Low): <span th:text="${image.name}">default</span> <br>
-				Latitude: <span th:text="${image.latitude}">default</span> <br>
-				Longitude: <span th:text="${image.longitude}">default</span> <br>
-				City: <span th:text="${image.city}">default</span> <br>
-				Region: <span th:text="${image.region}">default</span> <br>
-				Source: <span th:text="${image.source}">default</span> <br>
+		<div class="row" id="container-campaign-images" th:numImg="${session.campaign.numImages}" >
+			<div th:each="img : ${images}">
+				<div class="col-sm">
+					<div class="row">
+						<img src="../images/default.jpg" th:src="@{/GetImage(image=${img.name})}" class="rounded img-thumbnail" alt="campaign+image">
+					</div>
+					<div class="row">
+    					<div class="col text-center">
+							<button id="dtlBtn" type="button" class="btn btn-secondary mt-3" data-toggle="modal" th:data-target="${'#' + img.name + 'modalImage'}" data-target="#modalImage">details</button> 
+						</div>
+					</div>
+				</div>
+				
+				<div class="modal fade" th:id="${img.name + 'modalImage'}" tabindex="-1" role="dialog" aria-labelledby="modalImageTitle" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered modal-jnk modal-dialog-scrollable" role="document">
+				    <div class="modal-content">
+				      	<div class="modal-header">
+				        	<h5 class="modal-title" id="modalImageTitle"><span th:text="${img.name}">1</span>° image: </h5>
+				       		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          		<span aria-hidden="true">&times;</span>
+				        	</button>
+				      	</div>
+				      	<div class="modal-body">
+				      		<div class="row">
+				      			<div class="col-8">
+									<img src="../images/default.jpg" th:src="@{/GetImage(image=${img.name})}" class="rounded jnk-img" alt="campaign+image"> 
+				        		</div>
+				        		<div class="col-4" style="overflow-y: scroll; max-height: 600px;">
+									<ul class="list-unstyled">
+										<li><h4><span th:text="${img.name}">1</span>° image: </h4></li>
+										<li><i>Resolution(High, Medium, Low): </i><span th:text="${img.name}">default</span> </li>
+										<li><i>Latitude: </i><span th:text="${img.latitude}">default</span> </li>
+										<li><i>Longitude: </i><span th:text="${img.longitude}">default</span> </li>
+										<li><i>City: </i><span th:text="${img.city}">default</span> </li>
+										<li><i>Region: </i><span th:text="${img.region}">default</span> </li>
+										<li><i>Source: </i><span th:text="${img.source}">default</span> </li>
+									</ul>
+									<div th:if="(${img.isAnnotated} == false)">
+										<form action="AddAnnotation" method="POST" class="form-group">
+										<br>
+											Add Annotation(Max 255 characters): <br>
+											 	<textarea name="notes" maxlength="255" rows="5" class="form-control" required></textarea> <br>
+											Validity:	<br>
+												<input type="radio" name="validity" value="Real" class="form-control" required> Real <br>
+												<input type="radio" name="validity" value="False" class="form-control" required> False <br>
+											<input type="submit" th:value="${img.name}" class="mt-3">
+										</form>
+									</div>
+									<div th:if="(${img.isAnnotated} == true)">
+										<h4> Image already annotated </h4>
+										<i>You posted: </i><span th:text="${img.annotations[0].notes}"> sometext </span> <br>
+										<i>Validity: </i><span th:text="${img.annotations[0].validity}"> Real/False </span> 
+										<i>Trust: </i><span th:text="${img.annotations[0].trust}"> Low/Medium/High </span> <br>
+										<i><small>Date: <span th:text="${img.annotations[0].date}"> date </span> </small></i><br>
+									</div>
+				        		</div>
+			        		</div>
+				      	</div>
+				      		<div class="modal-footer">
+						        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close">Close</button>
+				      		</div>
+				    	</div>
+				    </div>
+				</div>
 			</div>
 		</div>
-		
-		<div th:if="(${image} != null) and (${image.isAnnotated} == false)">
-		<br>
-			<form action="AddAnnotation" method="POST">
-			<br>
-				Add Annotation(Max 255 characters): <br>
-				 	<textarea name="notes" maxlength="255" rows="5" cols="70" required></textarea> <br>
-				Validity:	<br>
-					<input type="radio" name="validity" value="Real" required> Real <br>
-					<input type="radio" name="validity" value="False" required> False <br>
-				<input type="submit" th:name="image" th:value="${image.name}">
-			</form>
-		</div>
-		<div th:if="(${image} != null) and (${image.isAnnotated} == true)">
-			<h4> Image already annotated </h4>
-			<i>You posted: </i><span th:text="${annotation.notes}"> sometext </span> <br>
-			<i>Validity: </i><span th:text="${annotation.validity}"> Real/False </span> 
-			<i>Trust: </i><span th:text="${annotation.trust}"> Low/Medium/High </span> <br>
-			<i><small>Date: <span th:text="${annotation.date}"> date </span> </small></i><br>
-		</div>
-		
 	</div>
 </body>
 </html>

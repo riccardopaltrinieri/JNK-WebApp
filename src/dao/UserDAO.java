@@ -32,7 +32,7 @@ public class UserDAO {
 			pstatement.executeUpdate();
 			
 			User user = new User(username, role, name, mailAddress, password, Level.Low);
-			img.addUserImage(user, null);
+			if(role.equals("worker")) img.addUserImage(user, null);
 		}
 	}
 	
@@ -76,24 +76,27 @@ public class UserDAO {
 		}
 	}
 
-	public User editUser(String usr, String username, String name, String mailAddress, String password, String role, Level level) throws SQLException {
+	public User editUser(User usr, String username, String name, String mailAddress, String password) throws SQLException {
 
 		ImageDAO img = new ImageDAO();
 		String query = "UPDATE jnk.jnk_users SET username = ?, mail_address = ?, name = ?, password = ? WHERE username = ?;";
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
-
-			if(!usr.equals(username)) img.editUserImage(usr, username);
 			
 			pstatement.setString(1, username);
 			pstatement.setString(2, mailAddress);
 			pstatement.setString(3, name);
 			pstatement.setString(4, password);
-			pstatement.setString(5, usr);
+			pstatement.setString(5, usr.getUsername());
 			pstatement.executeUpdate();
-			
-			User user = new User(username, role, name, mailAddress, password, level);
-			return user;
+		}			
+		
+		if(!usr.getUsername().equals(username)) {
+			img.editUserImages(usr, username);
 		}
+			
+		User user = new User(username,  usr.getRole(), name, mailAddress, password, usr.getLvlExp());
+		user.setId(usr.getId());
+		return user;
 	}
 
 }

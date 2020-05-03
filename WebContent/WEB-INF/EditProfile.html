@@ -31,9 +31,9 @@
 			
 				<div class="row">
 					<div th:if="${session.user.role=='worker'}" class="col-2">
-						<img  th:alt="profile+picture"
+						<img  th:alt="profile+picture" src="../images/profilePictures/Default.jpg"
 							th:src="@{/GetImage(userImage=${session.user.username})}" alt="default+picture" 
-							class="rounded img-thumbnail">
+							class="user-image mx-2 my-5">
 					</div>
 					<div class="col-9 ml-3">
 						<form action="EditProfile" method ="POST" enctype="multipart/form-data" class="form-group jnk-col" id="formEditProfile">
