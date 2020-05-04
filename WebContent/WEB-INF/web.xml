@@ -38,7 +38,9 @@ version="3.1">
     <url-pattern>/CreateCampaign</url-pattern> 
     <url-pattern>/UpdateCampaign</url-pattern> 
     <url-pattern>/ManagerEditCampaign</url-pattern> 
-    <url-pattern>/ManageCampaign</url-pattern> 
+    <url-pattern>/ManageCampaign</url-pattern>  
+    <url-pattern>/WorkerCampaign</url-pattern>  
+    <url-pattern>/AddAnnotation</url-pattern> 
     <url-pattern>/AddImage</url-pattern> 
     <url-pattern>/InfoImage</url-pattern> 
  </filter-mapping> 

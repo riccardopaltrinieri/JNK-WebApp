@@ -27,9 +27,11 @@
 	
 	<div class="container-fluid">
 	
-		<div class="row"><div class="col text-center">
-			<h1>Campaign <b><span th:text="${session.campaign.name}"> Default</span></b>: </h1>
-		</div></div>
+		<div class="row">
+			<div class="col text-center">
+				<h1>Campaign <b><span th:text="${session.campaign.name}"> Default</span></b>: </h1>
+			</div>
+		</div>
 		<div class="row text-center">
 			<div class="col-3"></div>
 			<ul class="list-unstyled col-3 text-center">
@@ -57,7 +59,7 @@
 		<div class="row" id="container-campaign-images" th:numImg="${session.campaign.numImages}" >
 			<div class="col"></div>
 			<div th:each="img : ${images}">
-				<div class="col-8" style="overflow-x: auto;">
+				<div class="col-8">
 					<div class="row">
 						<img src="../images/default.jpg" th:src="@{/GetImage(image=${img.name})}" class="rounded img-thumbnail" alt="campaign+image">
 					</div>
@@ -82,7 +84,7 @@
 				      	</div>
 				      	<div class="modal-body">
 				      		<div class="row">
-				      			<div class="col-8" style="position: fixed;">
+				      			<div class="col-8">
 									<img src="../images/default.jpg" th:src="@{/GetImage(image=${img.name})}" class="rounded jnk-img" alt="campaign+image"> 
 				        		</div>
 				        		<div class="col-4" style="overflow-y: scroll; max-height: 600px;">
@@ -94,6 +96,7 @@
 										<li><i>City: </i><span th:text="${img.city}">default</span> </li>
 										<li><i>Region: </i><span th:text="${img.region}">default</span> </li>
 										<li><i>Source: </i><span th:text="${img.source}">default</span> </li>
+										<li><i>Date: </i><span th:text="${img.date}">01-01-1991</span>
 									</ul>
 									
 									<h4>Annotations</h4>
@@ -123,14 +126,18 @@
 			<div class="col"></div>
 			<div th:if="${#strings.toString(session.campaign.state) == 'Created'}" class="col-8">
 				<h4>Add more images here: </h4>
+				<div th:if="${notValid == 'true'}" class="alert-warning">
+					<small>"Something went wrong while uploading the image, please repeat. "</small>
+				</div>
 				<form action="AddImage" method="POST" enctype="multipart/form-data" class="form-group mt-3">
 					<input type="file" id="image" name="image" accept="image/jpeg" class="form-control" required> <br>
-					Resolution(High, Medium, Low): <input type="text" name="resolution" class="form-control">
-					Latitude: <input type="text" name="latitude" class="form-control">
-					Longitude: <input type="text" name="longitude" class="form-control">
-					City: <input type="text" name="city" class="form-control">
-					Region: <input type="text" name="region" class="form-control">
-					Source: <input type="text" name="source" class="form-control">
+					Resolution(High, Medium, Low): <input type="text" name="resolution" pattern="High|Medium|Low" class="form-control" required>
+					Latitude: (-90.00000 , +90.00000) <input type="text" name="latitude" pattern="^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)" title="[-90.00000 , +90.00000]" class="form-control" required>
+					Longitude: (-180.00000 , +180.00000) <input type="text" name="longitude" pattern="[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$" title="[-180.00000 , +180.00000]" class="form-control" required>
+					City: <input type="text" name="city" class="form-control" required>
+					Region: <input type="text" name="region" class="form-control" required>
+					Source: <input type="text" name="source" class="form-control" required>
+					Date: <input type="date" name="date" class="form-control" required>
 					
 					<input class="mt-3" type="submit" value="Add">
 				</form>

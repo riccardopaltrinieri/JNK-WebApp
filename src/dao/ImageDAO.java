@@ -124,6 +124,7 @@ public class ImageDAO {
 					image.setRegion(result.getString("region"));
 					image.setSource(result.getString("source"));
 					image.setResolution(result.getString("resolution"));
+					image.setDate(result.getDate("date"));
 				}
 			}
 		return image;

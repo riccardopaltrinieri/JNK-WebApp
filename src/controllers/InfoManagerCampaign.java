@@ -22,7 +22,6 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.Campaign;
 import beans.Image;
-import beans.User;
 import dao.AnnotationDAO;
 import dao.CampaignDAO;
 import dao.ImageDAO;
@@ -32,7 +31,7 @@ import dao.ImageDAO;
  * This is used to show to a manager all the campaigns he created 
  * and to create new ones
  */
-@WebServlet({"/ManageCampaign", "/CreateCampaign"})
+@WebServlet("/ManageCampaign")
 public class InfoManagerCampaign extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;
@@ -109,25 +108,7 @@ public class InfoManagerCampaign extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		CampaignDAO cmp = new CampaignDAO(connection);
-		
-		String name = (String) request.getParameter("name");
-		String customer = (String) request.getParameter("customer");
-		User user = (User) request.getSession().getAttribute("user");
-		
-		// The user create a new campaign
-		try {
-			cmp.createNewCampaign(user, name, customer);
-		} catch (SQLException e) {
-			// When the name is already used an error message is shown on the page
-			System.out.println(e);
-			request.setAttribute("notValid", "true");
-		}
-		
-		// Redirect to the home where the user can select the campaign
-		// and get its ID from the database
-		response.sendRedirect(request.getContextPath()+"/Home");
+		doGet(request, response);
 	}
 
 

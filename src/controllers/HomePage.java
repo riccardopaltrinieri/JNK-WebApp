@@ -28,7 +28,7 @@ import dao.CampaignDAO;
  * it should be accessed only when logged in to recognise
  * the user role
  */
-@WebServlet("/Home")
+@WebServlet({"/Home", "/CreateCampaign"})
 public class HomePage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;
@@ -96,6 +96,24 @@ public class HomePage extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		CampaignDAO cmp = new CampaignDAO(connection);
+		
+		String name = (String) request.getParameter("name");
+		String customer = (String) request.getParameter("customer");
+		User user = (User) request.getSession().getAttribute("user");
+		
+		// The user create a new campaign
+		try {
+			cmp.createNewCampaign(user, name, customer);
+		} catch (SQLException e) {
+			// When the name is already used an error message is shown on the page
+			System.out.println(e);
+			request.setAttribute("notValid", "true");
+		}
+		
+		// Redirect to the home where the user can select the campaign
+		// and get its ID from the database
 		doGet(request, response);
 	}
 

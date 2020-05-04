@@ -28,24 +28,33 @@
 	<div class="container-fluid">
 	
 		<div class="row">
-			<h1>Campaign <b><span th:text="${session.campaign.name}"> Default</span></b>: </h1>
+			<div class="col text-center">
+				<h1>Campaign <b><span th:text="${session.campaign.name}"> Default</span></b>: </h1>
+			</div>
 		</div>
-		<div class="row">
-			<ul class="list-unstyled col-2">
-				<li>Customer: <span th:text="${session.campaign.customer}"> None</span>
-			</ul>
+		<div class="row text-center">
+			<div class="col-3"></div>
+			<div class="col">
+				<ul class="list-unstyled text-center">
+					<li>Customer: <span th:text="${session.campaign.customer}"> None</span>
+				</ul>
+			</div>
+			<div class="col-3"></div>
 		</div>
 		
 		<div class="row" id="container-campaign-images" th:numImg="${session.campaign.numImages}" >
+			<div class="col"></div>
 			<div th:each="img : ${images}">
-				<div class="col-sm">
+				<div class="col-8">
 					<div class="row">
 						<img src="../images/default.jpg" th:src="@{/GetImage(image=${img.name})}" class="rounded img-thumbnail" alt="campaign+image">
 					</div>
 					<div class="row">
+						<div class="col"></div>
     					<div class="col text-center">
 							<button id="dtlBtn" type="button" class="btn btn-secondary mt-3" data-toggle="modal" th:data-target="${'#' + img.name + 'modalImage'}" data-target="#modalImage">details</button> 
 						</div>
+						<div class="col"></div>
 					</div>
 				</div>
 				
@@ -72,16 +81,24 @@
 										<li><i>City: </i><span th:text="${img.city}">default</span> </li>
 										<li><i>Region: </i><span th:text="${img.region}">default</span> </li>
 										<li><i>Source: </i><span th:text="${img.source}">default</span> </li>
+										<li><i>Date: </i><span th:text="${img.date}">01-01-1991</span>
 									</ul>
+									
 									<div th:if="(${img.isAnnotated} == false)">
 										<form action="AddAnnotation" method="POST" class="form-group">
 										<br>
 											Add Annotation(Max 255 characters): <br>
-											 	<textarea name="notes" maxlength="255" rows="5" class="form-control" required></textarea> <br>
+										 	<textarea name="notes" maxlength="255" rows="5" class="form-control" required></textarea> <br>
+										 	
 											Validity:	<br>
-												<input type="radio" name="validity" value="Real" class="form-control" required> Real <br>
-												<input type="radio" name="validity" value="False" class="form-control" required> False <br>
-											<input type="submit" th:value="${img.name}" class="mt-3">
+											<div class="row">
+												<label class="col-6 text-center">Real: </label> <input type="radio" name="validity" value="Real" class="form-control col-6" required>
+											</div>
+											<div class="row">
+												<label class="col-6 text-center">False: </label> <input type="radio" name="validity" value="False" class="form-control col-6" required>
+											</div>
+											<input type="hidden" name="image" th:value="${img.name}" value="1">
+											<input type="submit" th:value="Add" class="mt-3">
 										</form>
 									</div>
 									<div th:if="(${img.isAnnotated} == true)">
@@ -101,6 +118,7 @@
 				    </div>
 				</div>
 			</div>
+			<div class="col"></div>
 		</div>
 	</div>
 </body>
