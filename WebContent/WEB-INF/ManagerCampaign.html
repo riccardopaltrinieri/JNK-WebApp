@@ -4,8 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-  <link href="../css/mystyle.css" rel="stylesheet">
-  <link href="css/mystyle.css" rel="stylesheet">
+  <link href="../css/mystyle.css" th:href="@{/css/mystyle.css}" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <title>JNK: Campaign View</title>
@@ -56,7 +55,13 @@
 			<div class="col-3"></div>
 		</div>
 		
-		<div class="row" id="container-campaign-images" th:numImg="${session.campaign.numImages}" >
+		<div class="row" th:if="${#strings.toString(session.campaign.state) != 'Created'}">
+			<div class="col"></div>
+			<div class="col-8" id="map"></div>
+			<div class="col"></div>
+		</div>
+		
+		<div class="row" id="container-campaign-images" th:numImg="${session.campaign.numImages}">
 			<div class="col"></div>
 			<div th:each="img : ${images}">
 				<div class="col-8">
@@ -91,23 +96,25 @@
 									<ul class="list-unstyled">
 										<li><h4><span th:text="${img.name}">1</span>° image: </h4></li>
 										<li><i>Resolution(High, Medium, Low): </i><span th:text="${img.name}">default</span> </li>
-										<li><i>Latitude: </i><span th:text="${img.latitude}">default</span> </li>
-										<li><i>Longitude: </i><span th:text="${img.longitude}">default</span> </li>
+										<li><i>Latitude: </i><span th:text="${img.latitude}" th:id="${'lat' + img.name}" th:lat="${img.latitude}">default</span> </li>
+										<li><i>Longitude: </i><span th:text="${img.longitude}" th:id="${'lon' + img.name}" th:lon="${img.longitude}">default</span> </li>
 										<li><i>City: </i><span th:text="${img.city}">default</span> </li>
 										<li><i>Region: </i><span th:text="${img.region}">default</span> </li>
 										<li><i>Source: </i><span th:text="${img.source}">default</span> </li>
 										<li><i>Date: </i><span th:text="${img.date}">01-01-1991</span>
 									</ul>
 									
-									<h4>Annotations</h4>
-									<div class="row" th:each="ann : ${img.annotations}">
-										<ul class="list-unstyled">
-											<li><b> <span th:text="${ann.author}"> user </span> </b> 
-											<li><i>Posted: </i><span th:text="${ann.notes}"> sometext </span> 
-											<li><i>Validity: </i><span th:text="${ann.validity}"> Real/False </span> 
-											<li><i>Trust: </i><span th:text="${ann.trust}"> Low/Medium/High </span> 
-											<li><i><small class="text-muted">Date: <span th:text="${ann.date}"> date </span> </small></i>
-										</ul>
+									<div id="annotations" th:isAnn="${img.isAnnotated}">
+										<div class="row" th:each="ann : ${img.annotations}">
+											<h4>Annotations</h4> <br>
+											<ul class="list-unstyled">
+												<li><b> <span th:text="${ann.author}"> user </span> </b> 
+												<li><i>Posted: </i><span th:text="${ann.notes}"> sometext </span> 
+												<li><i>Validity: </i><span th:text="${ann.validity}"> Real/False </span> 
+												<li><i>Trust: </i><span th:text="${ann.trust}"> Low/Medium/High </span> 
+												<li><i><small class="text-muted">Date: <span th:text="${ann.date}"> date </span> </small></i>
+											</ul>
+										</div>
 									</div>
 				        		</div>
 			        		</div>
@@ -146,21 +153,88 @@
 		</div>
 	</div>
 	
+	<!-- ********** MODAL SCRIPT ********** -->
 	<script>
-	var numImages = content.getElementById("container-campaign-images").getAttribute("numImages");
+		
+	var numImages = document.getElementById("container-campaign-images").getAttribute("numImg");
+		
 	if(numImages !== null) {
-		var img = 1;
-		for (img = 1; img <= numImages; img++){ 
+	
+		for (let img = 1; img <= numImages; img++){ 
 			$('#' + img + 'modalImage').on('shown.bs.modal', function () {
 				$('#myInput').trigger('focus')
 			})
 		}
+		
 	}
 	else {
+		
 		$('#modalImage').on('shown.bs.modal', function () {
 			$('#myInput').trigger('focus')
 		})
+		
 	}
+		
 	</script>
+	
+	<!-- ********** MAP SCRIPTS ********** -->
+	<script>
+	function initMap() {
+		
+		var numImages = document.getElementById("container-campaign-images").getAttribute("numImg");
+		
+		var map = new google.maps.Map(document.getElementById('map'), {
+			zoom: 1, 
+			center: new google.maps.LatLng(+0.000, +0.000)
+		});
+		
+		var markers = new Array();
+		var lat;
+		var lon;
+		var ann;
+		
+		if(numImages !== null) {
+			for (let img = 1; img <= numImages; img++){ 
+				
+				lat = parseFloat(document.getElementById("lat" + img).getAttribute("lat"));
+				lon = parseFloat(document.getElementById("lon" + img).getAttribute("lon"));
+				ann = document.getElementById("annotations").getAttribute("isAnn");
+				
+				if(ann.localeCompare("true") == 0){
+					markers[img] = new google.maps.Marker({
+						position: {
+							lat : lat,
+							lng: lon
+							}, 
+						map: map,
+						animation: google.maps.Animation.DROP,
+						icon: {
+						      url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+						    }
+						});
+				} else {
+					markers[img] = new google.maps.Marker({
+						position: {
+							lat : lat,
+							lng: lon
+							}, 
+						map: map,
+						animation: google.maps.Animation.DROP,
+						});
+				}
+			}
+		}
+	}
+	function drop() {
+		  for (var i =0; i < markers.length; i++) {
+		    setTimeout(function() {
+		      addMarkerMethod();
+		    }, i * 200);
+		  }
+		}
+	</script>
+	<script async defer
+    	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPKDWa4M0pC86P6MKPJb7p7Y7NXpW_2DQ&callback=initMap">
+    </script>
 </body>
 </html>

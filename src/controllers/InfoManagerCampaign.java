@@ -92,6 +92,7 @@ public class InfoManagerCampaign extends HttpServlet {
 			for (int i = 1; i <= campaign.getNumImages(); i++) {
 				image = img.getImageInfo(campaign, String.valueOf(i), connection);
 				image.setAnnotations(ant.getAnnotationsManager(image));
+				image.setAnnotated(!image.getAnnotations().isEmpty());
 				images.add(image);
 			}
 			
@@ -99,6 +100,7 @@ public class InfoManagerCampaign extends HttpServlet {
 			e.printStackTrace();
 		}
 		request.setAttribute("images", images);
+		request.setAttribute("API_KEY", "AIzaSyCPKDWa4M0pC86P6MKPJb7p7Y7NXpW_2DQ");
 		
 		String path = "/WEB-INF/ManagerCampaign.html";
 		ServletContext servletContext = getServletContext();
