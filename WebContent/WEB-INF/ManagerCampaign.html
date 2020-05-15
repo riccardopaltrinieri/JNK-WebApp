@@ -78,7 +78,7 @@
 					</div>
 				</div>
 				
-				<div class="modal fade" th:id="${img.name + 'modalImage'}" tabindex="-1" role="dialog" aria-labelledby="modalImageTitle" aria-hidden="true">
+				<div class="modal fade" th:id="${img.name + 'modalImage'}" id="modalImage" tabindex="-1" role="dialog" aria-labelledby="modalImageTitle" aria-hidden="true">
 				  <div class="modal-dialog modal-dialog-centered modal-jnk modal-dialog-scrollable" role="document">
 				    <div class="modal-content">
 				      	<div class="modal-header">
@@ -104,17 +104,20 @@
 										<li><i>Date: </i><span th:text="${img.date}">01-01-1991</span>
 									</ul>
 									
-									<div id="annotations" th:isAnn="${img.isAnnotated}">
+									<div th:id="${'annotations' + img.name}" th:isAnn="${img.annotated}">
+										<h4 th:if="${img.annotated == true}">Annotations</h4>
 										<div class="row" th:each="ann : ${img.annotations}">
-											<h4>Annotations</h4> <br>
-											<ul class="list-unstyled">
-												<li><b> <span th:text="${ann.author}"> user </span> </b> 
-												<li><i>Posted: </i><span th:text="${ann.notes}"> sometext </span> 
-												<li><i>Validity: </i><span th:text="${ann.validity}"> Real/False </span> 
-												<li><i>Trust: </i><span th:text="${ann.trust}"> Low/Medium/High </span> 
-												<li><i><small class="text-muted">Date: <span th:text="${ann.date}"> date </span> </small></i>
-											</ul>
+											<div class="col">
+												<ul class="list-unstyled">
+													<li><b> <span th:text="${ann.author}"> user </span> </b> 
+													<li><i>Posted: </i><span th:text="${ann.notes}"> sometext </span> 
+													<li><i>Validity: </i><span th:text="${ann.validity}"> Real/False </span> 
+													<li><i>Trust: </i><span th:text="${ann.trust}"> Low/Medium/High </span> 
+													<li><i><small class="text-muted">Date: <span th:text="${ann.date}"> date </span> </small></i>
+												</ul>
+											</div>
 										</div>
+										<h5 th:unless="${img.annotated == true}"> There aren't annotations on this image</h5>
 									</div>
 				        		</div>
 			        		</div>
@@ -198,10 +201,11 @@
 				
 				lat = parseFloat(document.getElementById("lat" + img).getAttribute("lat"));
 				lon = parseFloat(document.getElementById("lon" + img).getAttribute("lon"));
-				ann = document.getElementById("annotations").getAttribute("isAnn");
+				ann = document.getElementById("annotations" + img).getAttribute("isAnn");
 				
 				if(ann.localeCompare("true") == 0){
 					markers[img] = new google.maps.Marker({
+						label: img,
 						position: {
 							lat : lat,
 							lng: lon
@@ -214,14 +218,23 @@
 						});
 				} else {
 					markers[img] = new google.maps.Marker({
+						label: img,
 						position: {
 							lat : lat,
 							lng: lon
 							}, 
 						map: map,
 						animation: google.maps.Animation.DROP,
+						icon: {
+						      url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+						    }
 						});
 				}
+				google.maps.event.addListener(markers[img], 'click', function() {
+				    map.setCenter(this.position);
+				    map.setZoom(4);
+				    $('#' + img + 'modalImage').modal('show');
+			        });
 			}
 		}
 	}
