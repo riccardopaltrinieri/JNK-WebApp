@@ -22,6 +22,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.Campaign;
 import beans.Image;
+import beans.User;
 import dao.AnnotationDAO;
 import dao.CampaignDAO;
 import dao.ImageDAO;
@@ -69,6 +70,8 @@ public class InfoManagerCampaign extends HttpServlet {
 		
 		String campaignName = request.getParameter("campaign");
 		Campaign campaign = (Campaign) request.getSession().getAttribute("campaign");
+		User user = (User) request.getSession().getAttribute("user");
+		
 		CampaignDAO cmp = new CampaignDAO(connection);
 		AnnotationDAO ant = new AnnotationDAO(connection);
 		ImageDAO img = new ImageDAO();
@@ -78,10 +81,11 @@ public class InfoManagerCampaign extends HttpServlet {
 		// get it from the database and save it in a var and in the session
 		if(campaignName != null) {
 			try {
-				campaign = cmp.getCampaign(campaignName);
+				campaign = cmp.getCampaign(campaignName, user);
 				request.getSession().setAttribute("campaign", campaign);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				request.setAttribute("notValid", "true");
+				request.getSession().setAttribute("campaign", null);
 			}
 		}
 		
@@ -100,7 +104,6 @@ public class InfoManagerCampaign extends HttpServlet {
 			e.printStackTrace();
 		}
 		request.setAttribute("images", images);
-		request.setAttribute("API_KEY", "AIzaSyCPKDWa4M0pC86P6MKPJb7p7Y7NXpW_2DQ");
 		
 		String path = "/WEB-INF/ManagerCampaign.html";
 		ServletContext servletContext = getServletContext();

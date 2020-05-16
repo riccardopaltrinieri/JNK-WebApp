@@ -42,19 +42,16 @@
 			<div class="col-3"></div>
 		</div>
 		
-		<div class="row" id="container-campaign-images" th:numImg="${session.campaign.numImages}" >
-			<div class="col"></div>
+		<div class="row justify-content-center" id="container-campaign-images" th:numImg="${session.campaign.numImages}" >
 			<div th:each="img : ${images}">
 				<div class="col-8">
 					<div class="row">
-						<img src="../images/default.jpg" th:src="@{/GetImage(image=${img.name})}" class="rounded img-thumbnail" alt="campaign+image">
+						<img src="../images/default.jpg" th:src="@{/GetImage(image=${img.name})}" class="rounded img-thumbnail mx-2" alt="campaign+image">
 					</div>
-					<div class="row">
-						<div class="col"></div>
+					<div class="row justify-content-center">
     					<div class="col text-center">
-							<button id="dtlBtn" type="button" class="btn btn-secondary mt-3" data-toggle="modal" th:data-target="${'#' + img.name + 'modalImage'}" data-target="#modalImage">details</button> 
+							<button id="dtlBtn" type="button" class="btn btn-secondary my-2" data-toggle="modal" th:data-target="${'#' + img.name + 'modalImage'}" data-target="#modalImage">details</button> 
 						</div>
-						<div class="col"></div>
 					</div>
 				</div>
 				
@@ -118,7 +115,6 @@
 				    </div>
 				</div>
 			</div>
-			<div class="col"></div>
 		</div>
 	</div>
 </body>

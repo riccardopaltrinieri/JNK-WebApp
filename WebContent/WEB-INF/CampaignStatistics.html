@@ -23,12 +23,9 @@
 	</div>
 	<!-- ********************* /HEADER ************************* -->
 	
-	<a href="ManagerCampaign.html" th:href="@{/ManageCampaign(campaign=${session.campaign.name})}" th:text="${session.campaign.name}"> 
-		<button class="btn btn-light ml-3"> Back </button>
-	</a>
+	
 	
 	<div class="container-fluid">
-		
 		<div>
 			<ul class="list-unstyled">
 				<li><h1> Campaign <b><span th:text="${session.campaign.name}"> Default </span></b>: </h1>
@@ -39,6 +36,9 @@
 				<li><i>Images with conflicts: </i><span th:text="${session.stats.conflicts}"> 0</span>
 			</ul>
 		</div>
+		<a href="ManagerCampaign.html" th:href="@{/ManageCampaign(campaign=${session.campaign.name})}"> 
+			<button class="btn btn-outline-secondary ml-3"> Go back to the campaign</button>
+		</a>
 	</div>
 </body>
 </html>

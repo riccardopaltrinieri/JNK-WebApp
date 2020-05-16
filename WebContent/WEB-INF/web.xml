@@ -43,6 +43,7 @@ version="3.1">
     <url-pattern>/AddAnnotation</url-pattern> 
     <url-pattern>/AddImage</url-pattern> 
     <url-pattern>/InfoImage</url-pattern> 
+    <url-pattern>/Statistics</url-pattern> 
  </filter-mapping> 
  <filter-mapping> 
     <filter-name>ManagerChecker</filter-name> 
@@ -52,6 +53,7 @@ version="3.1">
     <url-pattern>/ManagerEditCampaign</url-pattern> 
     <url-pattern>/ManageCampaign</url-pattern> 
     <url-pattern>/AddImage</url-pattern> 
+    <url-pattern>/Statistics</url-pattern>
  </filter-mapping> 
 
  <welcome-file-list>

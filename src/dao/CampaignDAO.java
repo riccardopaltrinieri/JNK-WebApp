@@ -86,26 +86,32 @@ public class CampaignDAO {
 	/**
 	 * Get all the info about the campaign named like the parameter (campaign names are unique)
 	 * @param campaignName
+	 * @param user 
 	 * @return the {@link Campaign} filled with the info
 	 * @throws SQLException
 	 */
-	public Campaign getCampaign(String campaignName) throws SQLException {
-		String query = "SELECT c.id, c.name, u.username, customer, state, num_images FROM jnk.jnk_campaigns as c JOIN jnk.jnk_users as u ON c.id_owner = u.id WHERE c.name = ? ";
+	public Campaign getCampaign(String campaignName, User user) throws SQLException {
+		String query = "SELECT c.id, c.name, u.username, customer, state, num_images "
+					 + "FROM jnk.jnk_campaigns as c JOIN jnk.jnk_users as u ON c.id_owner = u.id "
+					 + "WHERE c.name = ? AND c.id_owner = ?";
 		
 		try (PreparedStatement pstatement = connection.prepareStatement(query); ) {
 
 			pstatement.setString(1, campaignName);
+			pstatement.setInt(2, user.getId());
 			pstatement.execute();
 
 			try (ResultSet result = pstatement.executeQuery();) {
-				result.next();
-				String customer = result.getString("customer");
-				String owner = result.getString("u.username");
-				State state = State.valueOf(result.getString("state"));
-				int numImages = result.getInt("num_images");
-				Campaign campaign = new Campaign(campaignName, customer, owner, state, numImages);
-				campaign.setId(result.getInt("id"));
-				return campaign;
+				if(result.next()) {
+					String customer = result.getString("customer");
+					String owner = result.getString("u.username");
+					State state = State.valueOf(result.getString("state"));
+					int numImages = result.getInt("num_images");
+					Campaign campaign = new Campaign(campaignName, customer, owner, state, numImages);
+					campaign.setId(result.getInt("id"));
+					return campaign;
+				}
+				else throw new SQLException();
 			}
 		}
 	}
