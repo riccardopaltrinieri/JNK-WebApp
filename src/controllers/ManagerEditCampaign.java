@@ -84,7 +84,7 @@ public class ManagerEditCampaign extends HttpServlet {
 		tempImage.setRegion(request.getParameter("region"));
 		tempImage.setSource(request.getParameter("source"));
 		tempImage.setCity(request.getParameter("city"));
-		tempImage.setDate(Date.valueOf(request.getParameter("date"))); //TODO fix date input
+		tempImage.setDate(Date.valueOf(request.getParameter("date")));
 		
 		Part image = request.getPart("image");
 		if(image != null && image.getSize() != 0) {

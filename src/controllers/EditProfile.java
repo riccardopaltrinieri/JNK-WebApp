@@ -87,7 +87,7 @@ public class EditProfile extends HttpServlet {
 		
 		try {
 			
-			// The user can modify just one thing per form so the method can use old values
+			// The user could modify just one thing per form so the method will use old values
 			if(username.isEmpty()) username = user.getUsername();
 			if(name.isEmpty()) name = user.getName();
 			if(mailAddress.isEmpty()) mailAddress = user.getMailAddress();

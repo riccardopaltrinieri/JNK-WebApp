@@ -81,7 +81,9 @@ public class InfoManagerCampaign extends HttpServlet {
 		// get it from the database and save it in a var and in the session
 		if(campaignName != null) {
 			try {
-				campaign = cmp.getCampaign(campaignName, user);
+				campaign = cmp.getCampaign(campaignName);
+				if(!campaign.getOwner().equals(user.getUsername())) 
+					throw new SQLException("The campaign was not created by this manager");
 				request.getSession().setAttribute("campaign", campaign);
 			} catch (SQLException e) {
 				request.setAttribute("notValid", "true");

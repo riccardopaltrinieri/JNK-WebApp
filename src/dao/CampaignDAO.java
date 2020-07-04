@@ -86,19 +86,17 @@ public class CampaignDAO {
 	/**
 	 * Get all the info about the campaign named like the parameter (campaign names are unique)
 	 * @param campaignName
-	 * @param user 
 	 * @return the {@link Campaign} filled with the info
 	 * @throws SQLException
 	 */
-	public Campaign getCampaign(String campaignName, User user) throws SQLException {
+	public Campaign getCampaign(String campaignName) throws SQLException {
 		String query = "SELECT c.id, c.name, u.username, customer, state, num_images "
 					 + "FROM jnk.jnk_campaigns as c JOIN jnk.jnk_users as u ON c.id_owner = u.id "
-					 + "WHERE c.name = ? AND c.id_owner = ?";
+					 + "WHERE c.name = ?";
 		
 		try (PreparedStatement pstatement = connection.prepareStatement(query); ) {
 
 			pstatement.setString(1, campaignName);
-			pstatement.setInt(2, user.getId());
 			pstatement.execute();
 
 			try (ResultSet result = pstatement.executeQuery();) {
